@@ -3,7 +3,6 @@ use bevy::render::prelude::SpatialBundle;
 use bevy::window::PrimaryWindow;
 use rand::prelude::*;
 
-pub const DEFAULT_DISTANCE: usize = 100;
 pub const BG_CELL_SIZE: f32 = 40.0;
 pub const LAND_ROW_COUNT: i32 = 20;
 
@@ -77,8 +76,10 @@ pub fn spawn_background(mut commands: Commands, asset_server: Res<AssetServer>, 
     let window = window_query.get_single().unwrap();
     println!("window size = {} / {} = {}", window.width(), BG_CELL_SIZE, window.width() / BG_CELL_SIZE);
     let row_side_count = (window.width() / BG_CELL_SIZE) as i32 / 2 + 1;
+    let col_count = (window.height() / BG_CELL_SIZE) as i32 + 1;
 
     println!("spawn background");
+
     let parent = commands
         .spawn((
             SpatialBundle {
@@ -90,7 +91,7 @@ pub fn spawn_background(mut commands: Commands, asset_server: Res<AssetServer>, 
         ))
         .id();
 
-    for i in 0..DEFAULT_DISTANCE {
+    for i in 0..col_count {
         let h_pos = i as f32 * BG_CELL_SIZE;
         add_bg_cell(&mut commands, &asset_server, Vec3::new(0., h_pos, 0.), parent, get_tile_type(0));
         for j in 1..row_side_count {
