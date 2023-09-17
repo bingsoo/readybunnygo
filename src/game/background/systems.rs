@@ -14,14 +14,23 @@ pub fn add_bg_cell(
     asset_server: &Res<AssetServer>,
     loc: Vec3,
     parent: Entity,
+    right_edge: bool,
+    left_edge: bool,
 ) {
+    let mut file_name = "bg2.png";
+    if left_edge {
+        file_name = "bg1.png";
+    } else if right_edge {
+        file_name = "bg3.png";
+    }
+
     let sprite = commands
         .spawn(SpriteBundle {
             sprite: Sprite {
                 custom_size: Some(Vec2::new(BG_CELL_SIZE, BG_CELL_SIZE)),
                 ..default()
             },
-            texture: asset_server.load("bg2.png"),
+            texture: asset_server.load(file_name),
             transform: Transform::from_translation(loc),
             ..Default::default()
         })
@@ -61,15 +70,32 @@ pub fn spawn_background(
             &asset_server,
             Vec3::new(0., h_pos, 0.),
             parent,
+            false,
+            false,
         );
 
         for j in 1..row_count {
             let loc = Vec3::new(j as f32 * BG_CELL_SIZE, h_pos, 0.);
-            add_bg_cell(&mut commands, &asset_server, loc, parent);
+            add_bg_cell(
+                &mut commands,
+                &asset_server,
+                loc,
+                parent,
+                j == row_count - 1,
+                false,
+            );
         }
+
         for j in 1..row_count {
             let loc = Vec3::new(j as f32 * BG_CELL_SIZE * -1., h_pos, 0.);
-            add_bg_cell(&mut commands, &asset_server, loc, parent);
+            add_bg_cell(
+                &mut commands,
+                &asset_server,
+                loc,
+                parent,
+                false,
+                j == row_count - 1,
+            );
         }
     }
 }
