@@ -19,6 +19,7 @@ pub struct GlobalData {
     speed: ScrollSpeed,
 }
 
+#[derive(Debug)]
 enum ScrollSpeed {
     Speed1,
     Speed2,
@@ -141,11 +142,18 @@ pub fn update_background(mut parent_position: Query<&mut Transform, With<Parent>
 }
 
 pub fn speed_control(keycode: Res<Input<KeyCode>>, mut global_data: ResMut<GlobalData>) {
+    let mut change_made = false;
     if keycode.just_pressed(KeyCode::Up) {
         global_data.speed.increment();
+        change_made = true;
     }
     if keycode.just_pressed(KeyCode::Down) {
         global_data.speed.decrement();
+        change_made = true;
+    }
+
+    if change_made {
+        println!("current speed is {:?}", global_data.speed);
     }
 }
 
