@@ -10,7 +10,7 @@ use crate::GameCamera;
 pub const BG_CELL_SIZE: f32 = 40.0;
 pub const LAND_ROW_COUNT: i32 = 20;
 pub const LAND_COL_COUNT: i32 = 60;
-pub const CAMERA_MOVE_TIME: u64 = 100;
+pub const CAMERA_MOVE_TIME: u64 = 200;
 
 #[derive(Component)]
 pub struct Parent;
@@ -39,43 +39,43 @@ impl Lens<OrthographicProjection> for TransformProjectionLens {
 
 #[derive(Debug)]
 enum ScrollSpeed {
+    Speed0,
     Speed1,
     Speed2,
-    Speed3,
-    Speed4,
-    Speed5,
 }
 
 impl ScrollSpeed {
     // Helper function to increment the speed
     fn increment(&mut self) {
         *self = match *self {
+            ScrollSpeed::Speed0 => ScrollSpeed::Speed1,
             ScrollSpeed::Speed1 => ScrollSpeed::Speed2,
-            ScrollSpeed::Speed2 => ScrollSpeed::Speed3,
-            ScrollSpeed::Speed3 => ScrollSpeed::Speed4,
-            ScrollSpeed::Speed4 => ScrollSpeed::Speed5,
-            ScrollSpeed::Speed5 => ScrollSpeed::Speed5,
+            ScrollSpeed::Speed2 => ScrollSpeed::Speed2,
         };
     }
 
     // Helper function to decrement the speed
     fn decrement(&mut self) {
         *self = match *self {
-            ScrollSpeed::Speed1 => ScrollSpeed::Speed1,
+            ScrollSpeed::Speed0 => ScrollSpeed::Speed0,
+            ScrollSpeed::Speed1 => ScrollSpeed::Speed0,
             ScrollSpeed::Speed2 => ScrollSpeed::Speed1,
-            ScrollSpeed::Speed3 => ScrollSpeed::Speed2,
-            ScrollSpeed::Speed4 => ScrollSpeed::Speed3,
-            ScrollSpeed::Speed5 => ScrollSpeed::Speed4,
         };
     }
 
     fn get_zoom_scale(&self) -> f32 {
         match *self {
+            ScrollSpeed::Speed0 => 0.95,
             ScrollSpeed::Speed1 => 1.0,
-            ScrollSpeed::Speed2 => 1.1,
-            ScrollSpeed::Speed3 => 1.2,
-            ScrollSpeed::Speed4 => 1.3,
-            ScrollSpeed::Speed5 => 1.5,
+            ScrollSpeed::Speed2 => 1.5,
+        }
+    }
+
+    fn get_scroll_speed(&self) -> f32 {
+        match *self {
+            ScrollSpeed::Speed0 => 0.0,
+            ScrollSpeed::Speed1 => 1.0,
+            ScrollSpeed::Speed2 => 15.0,
         }
     }
 }
@@ -104,14 +104,43 @@ impl TileType {
     }
 }
 
-fn get_scroll_speed(speed: &ScrollSpeed) -> f32 {
-    match speed {
-        ScrollSpeed::Speed1 => 1.0,
-        ScrollSpeed::Speed2 => 2.5,
-        ScrollSpeed::Speed3 => 4.5,
-        ScrollSpeed::Speed4 => 5.5,
-        ScrollSpeed::Speed5 => 9.5,
+pub fn spawn_background(mut commands: Commands, asset_server: Res<AssetServer>, window_query: Query<&Window, With<PrimaryWindow>>) {
+    let window = window_query.get_single().unwrap();
+    println!("window size = {} / {} = {}", window.width(), BG_CELL_SIZE, window.width() / BG_CELL_SIZE);
+    let row_side_count = (window.width() / BG_CELL_SIZE) as i32 / 2 + 1 + 13;
+    let col_count = LAND_COL_COUNT; //(window.height() / BG_CELL_SIZE) as i32 + 1;
+    let begin_y = window.height() * -1.0 * 0.5;
+
+    println!("spawn background");
+
+    let parent = commands
+        .spawn((
+            SpatialBundle {
+                visibility: Visibility::Visible,
+                transform: Transform::from_translation(Vec3::new(0., begin_y, 0.)),
+                ..default()
+            },
+            Parent,
+        ))
+        .id();
+
+    for i in 0..col_count {
+        let h_pos = i as f32 * BG_CELL_SIZE;
+        add_bg_cell(&mut commands, &asset_server, Vec3::new(0., h_pos, 0.), parent, get_tile_type(0));
+        for j in 1..row_side_count {
+            let loc_right = Vec3::new(j as f32 * BG_CELL_SIZE, h_pos, 0.);
+            let loc_left = Vec3::new(-loc_right.x, loc_right.y, loc_right.z);
+            add_bg_cell(&mut commands, &asset_server, loc_right, parent, get_tile_type(j));
+            add_bg_cell(&mut commands, &asset_server, loc_left, parent, get_tile_type(j));
+        }
     }
+
+    commands.insert_resource(GlobalData {
+        current_pos_y: begin_y,
+        speed: ScrollSpeed::Speed1,
+        should_zoom: false,
+    });
+    println!("starting pos y = {}", begin_y);
 }
 
 fn add_bg_cell(commands: &mut Commands, asset_server: &Res<AssetServer>, loc: Vec3, parent: Entity, type_type: TileType) {
@@ -179,7 +208,7 @@ pub fn update_camera(q: Query<(Entity, &OrthographicProjection), With<GameCamera
 
 pub fn update_tiles(mut tile_position: Query<&mut Transform, With<Tile>>, global_data: Res<GlobalData>) {
     for mut transform in &mut tile_position {
-        if transform.translation.y + global_data.current_pos_y + 580.0 < 0.0 {
+        if transform.translation.y + global_data.current_pos_y < -860.0 {
             transform.translation.y += BG_CELL_SIZE * LAND_COL_COUNT as f32;
         }
     }
@@ -187,7 +216,7 @@ pub fn update_tiles(mut tile_position: Query<&mut Transform, With<Tile>>, global
 
 pub fn update_background(mut parent_position: Query<&mut Transform, With<Parent>>, mut global_data: ResMut<GlobalData>) {
     let mut transform = parent_position.single_mut();
-    transform.translation.y -= get_scroll_speed(&global_data.speed);
+    transform.translation.y -= global_data.speed.get_scroll_speed();
     global_data.current_pos_y = transform.translation.y;
 }
 
@@ -206,43 +235,4 @@ pub fn speed_control(keycode: Res<Input<KeyCode>>, mut global_data: ResMut<Globa
         global_data.should_zoom = true;
         println!("current speed is {:?}", global_data.speed);
     }
-}
-
-pub fn spawn_background(mut commands: Commands, asset_server: Res<AssetServer>, window_query: Query<&Window, With<PrimaryWindow>>) {
-    let window = window_query.get_single().unwrap();
-    println!("window size = {} / {} = {}", window.width(), BG_CELL_SIZE, window.width() / BG_CELL_SIZE);
-    let row_side_count = (window.width() / BG_CELL_SIZE) as i32 / 2 + 1;
-    let col_count = LAND_COL_COUNT; //(window.height() / BG_CELL_SIZE) as i32 + 1;
-    let begin_y = window.height() * -1.0 * 0.5;
-
-    println!("spawn background");
-
-    let parent = commands
-        .spawn((
-            SpatialBundle {
-                visibility: Visibility::Visible,
-                transform: Transform::from_translation(Vec3::new(0., begin_y, 0.)),
-                ..default()
-            },
-            Parent,
-        ))
-        .id();
-
-    for i in 0..col_count {
-        let h_pos = i as f32 * BG_CELL_SIZE;
-        add_bg_cell(&mut commands, &asset_server, Vec3::new(0., h_pos, 0.), parent, get_tile_type(0));
-        for j in 1..row_side_count {
-            let loc_right = Vec3::new(j as f32 * BG_CELL_SIZE, h_pos, 0.);
-            let loc_left = Vec3::new(-loc_right.x, loc_right.y, loc_right.z);
-            add_bg_cell(&mut commands, &asset_server, loc_right, parent, get_tile_type(j));
-            add_bg_cell(&mut commands, &asset_server, loc_left, parent, get_tile_type(j));
-        }
-    }
-
-    commands.insert_resource(GlobalData {
-        current_pos_y: begin_y,
-        speed: ScrollSpeed::Speed1,
-        should_zoom: false,
-    });
-    println!("starting pos y = {}", begin_y);
 }
