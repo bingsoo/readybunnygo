@@ -2,6 +2,8 @@
 use bevy::prelude::*;
 //use bevy::window::PrimaryWindow;
 
+use crate::GameCamera;
+
 pub fn spawn_camera(
     mut commands: Commands,
     //window_query: Query<&Window, With<PrimaryWindow>>
@@ -13,8 +15,5 @@ pub fn spawn_camera(
     //     ..default()
     // });
 
-    commands.spawn((Camera2dBundle {
-        camera: Camera { ..default() },
-        ..default()
-    },));
+    commands.spawn((Camera2dBundle { camera: Camera { ..default() }, ..default() }, GameCamera));
 }

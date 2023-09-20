@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 bevy = { version = "0.11.0", features = ["dynamic_linking"] }
 rand = "0.8"
+bevy_tweening = "0.8"
 
 [profile.dev]
 opt-level = 1

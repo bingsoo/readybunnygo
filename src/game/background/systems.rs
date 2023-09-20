@@ -1,11 +1,16 @@
 use bevy::prelude::*;
 use bevy::render::prelude::SpatialBundle;
 use bevy::window::PrimaryWindow;
+use bevy_tweening::{lens::*, *};
 use rand::prelude::*;
+use std::time::Duration;
+
+use crate::GameCamera;
 
 pub const BG_CELL_SIZE: f32 = 40.0;
 pub const LAND_ROW_COUNT: i32 = 20;
 pub const LAND_COL_COUNT: i32 = 60;
+pub const CAMERA_MOVE_TIME: u64 = 100;
 
 #[derive(Component)]
 pub struct Parent;
@@ -15,8 +20,21 @@ pub struct Tile;
 
 #[derive(Resource)]
 pub struct GlobalData {
+    should_zoom: bool,
     current_pos_y: f32,
     speed: ScrollSpeed,
+}
+
+pub struct TransformProjectionLens {
+    pub start: f32,
+    pub end: f32,
+}
+
+impl Lens<OrthographicProjection> for TransformProjectionLens {
+    fn lerp(&mut self, target: &mut OrthographicProjection, ratio: f32) {
+        let value = self.start + (self.end - self.start) * ratio;
+        target.scale = value;
+    }
 }
 
 #[derive(Debug)]
@@ -50,6 +68,16 @@ impl ScrollSpeed {
             ScrollSpeed::Speed5 => ScrollSpeed::Speed4,
         };
     }
+
+    fn get_zoom_scale(&self) -> f32 {
+        match *self {
+            ScrollSpeed::Speed1 => 1.0,
+            ScrollSpeed::Speed2 => 1.1,
+            ScrollSpeed::Speed3 => 1.2,
+            ScrollSpeed::Speed4 => 1.3,
+            ScrollSpeed::Speed5 => 1.5,
+        }
+    }
 }
 
 enum TileType {
@@ -81,8 +109,8 @@ fn get_scroll_speed(speed: &ScrollSpeed) -> f32 {
         ScrollSpeed::Speed1 => 1.0,
         ScrollSpeed::Speed2 => 2.5,
         ScrollSpeed::Speed3 => 4.5,
-        ScrollSpeed::Speed4 => 7.5,
-        ScrollSpeed::Speed5 => 11.0,
+        ScrollSpeed::Speed4 => 5.5,
+        ScrollSpeed::Speed5 => 9.5,
     }
 }
 
@@ -91,7 +119,10 @@ fn add_bg_cell(commands: &mut Commands, asset_server: &Res<AssetServer>, loc: Ve
     let sprite = commands
         .spawn((
             SpriteBundle {
-                sprite: Sprite { custom_size: Some(Vec2::new(BG_CELL_SIZE, BG_CELL_SIZE)), ..default() },
+                sprite: Sprite {
+                    custom_size: Some(Vec2::new(BG_CELL_SIZE, BG_CELL_SIZE)),
+                    ..default()
+                },
                 texture: asset_server.load(file_name),
                 transform: Transform::from_translation(loc),
                 ..Default::default()
@@ -108,10 +139,10 @@ fn get_tile_type(row_pos: i32) -> TileType {
     let rand_number: usize = rng.gen_range(0..=500);
     let mut tile_type = TileType::Normal1;
 
-    if row_pos == LAND_ROW_COUNT {
-        return TileType::Tree1;
-    } else if row_pos > LAND_ROW_COUNT {
-        return tile_type;
+    match row_pos {
+        x if x == LAND_ROW_COUNT => return TileType::Tree1,
+        x if x > LAND_ROW_COUNT => return tile_type,
+        _ => {},
     }
 
     match rand_number {
@@ -127,10 +158,29 @@ fn get_tile_type(row_pos: i32) -> TileType {
     tile_type
 }
 
+pub fn update_camera(q: Query<(Entity, &OrthographicProjection), With<GameCamera>>, mut global_data: ResMut<GlobalData>, mut commands: Commands) {
+    let (id, projection) = q.single();
+    if global_data.should_zoom {
+        global_data.should_zoom = false;
+        println!("camera scale = {}", projection.scale);
+
+        let zoom_tween = Tween::new(
+            EaseFunction::QuadraticInOut,
+            Duration::from_millis(CAMERA_MOVE_TIME),
+            TransformProjectionLens {
+                start: projection.scale,
+                end: global_data.speed.get_zoom_scale(),
+            },
+        );
+        commands.entity(id).insert(Animator::new(zoom_tween));
+        println!("camera scale = {} -> {}", projection.scale, global_data.speed.get_zoom_scale());
+    }
+}
+
 pub fn update_tiles(mut tile_position: Query<&mut Transform, With<Tile>>, global_data: Res<GlobalData>) {
     for mut transform in &mut tile_position {
         if transform.translation.y + global_data.current_pos_y + 580.0 < 0.0 {
-            transform.translation.y += BG_CELL_SIZE as f32 * LAND_COL_COUNT as f32;
+            transform.translation.y += BG_CELL_SIZE * LAND_COL_COUNT as f32;
         }
     }
 }
@@ -153,6 +203,7 @@ pub fn speed_control(keycode: Res<Input<KeyCode>>, mut global_data: ResMut<Globa
     }
 
     if change_made {
+        global_data.should_zoom = true;
         println!("current speed is {:?}", global_data.speed);
     }
 }
@@ -188,6 +239,10 @@ pub fn spawn_background(mut commands: Commands, asset_server: Res<AssetServer>, 
         }
     }
 
-    commands.insert_resource(GlobalData { current_pos_y: begin_y, speed: ScrollSpeed::Speed1 });
+    commands.insert_resource(GlobalData {
+        current_pos_y: begin_y,
+        speed: ScrollSpeed::Speed1,
+        should_zoom: false,
+    });
     println!("starting pos y = {}", begin_y);
 }
