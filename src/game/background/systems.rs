@@ -74,7 +74,7 @@ impl ScrollSpeed {
     fn get_scroll_speed(&self) -> f32 {
         match *self {
             ScrollSpeed::Speed0 => 0.0,
-            ScrollSpeed::Speed1 => 1.0,
+            ScrollSpeed::Speed1 => 5.0,
             ScrollSpeed::Speed2 => 15.0,
         }
     }
@@ -93,13 +93,13 @@ enum TileType {
 impl TileType {
     fn as_str(&self) -> &'static str {
         match *self {
-            TileType::Normal1 => "land1.png",
-            TileType::Normal2 => "land2.png",
-            TileType::House1 => "house1.png",
-            TileType::House2 => "house2.png",
-            TileType::Tree1 => "tree1.png",
-            TileType::Tree2 => "tree2.png",
-            TileType::Tree3 => "tree3.png",
+            TileType::Normal1 => "background/land1.png",
+            TileType::Normal2 => "background/land2.png",
+            TileType::House1 => "background/house1.png",
+            TileType::House2 => "background/house2.png",
+            TileType::Tree1 => "background/tree1.png",
+            TileType::Tree2 => "background/tree2.png",
+            TileType::Tree3 => "background/tree3.png",
         }
     }
 }
