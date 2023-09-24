@@ -3,6 +3,8 @@ use bevy::prelude::*;
 
 use rand::Rng;
 
+//use crate::game::background::GlobalData;
+
 #[derive(Debug)]
 enum EnemyType {
     Type0,
@@ -36,6 +38,9 @@ impl EnemyType {
 
 pub const NUM_ENEMY: usize = 500;
 
+#[derive(Component)]
+pub struct EnemyShip;
+
 pub fn spawn_enemy(mut commands: Commands, asset_server: Res<AssetServer>, q: Query<Entity, With<BackgroundPanel>>) {
     println!("spawn enemy");
 
@@ -52,14 +57,26 @@ pub fn spawn_enemy(mut commands: Commands, asset_server: Res<AssetServer>, q: Qu
     }
 }
 
+pub fn update_enemy(mut q: Query<&mut Transform, With<EnemyShip>>) {
+    for mut transform in &mut q {
+        // if transform.translation.y + global_data.current_pos_y < -860.0 {
+        //     transform.translation.y += BG_CELL_SIZE * LAND_COL_COUNT as f32;
+        // }
+        transform.translation.y -= 5.0;
+    }
+}
+
 fn add_enemy(commands: &mut Commands, asset_server: &Res<AssetServer>, bg_panel: Entity, loc: Vec3, enemy_type: EnemyType) {
     let enemy = commands
-        .spawn((SpriteBundle {
-            sprite: Sprite { custom_size: Some(Vec2::new(40.0, 40.0)), ..default() },
-            texture: asset_server.load(enemy_type.get_image_file()),
-            transform: Transform::from_translation(loc),
-            ..Default::default()
-        },))
+        .spawn((
+            SpriteBundle {
+                sprite: Sprite { custom_size: Some(Vec2::new(40.0, 40.0)), ..default() },
+                texture: asset_server.load(enemy_type.get_image_file()),
+                transform: Transform::from_translation(loc),
+                ..Default::default()
+            },
+            EnemyShip,
+        ))
         .id();
 
     commands.entity(bg_panel).push_children(&[enemy]);

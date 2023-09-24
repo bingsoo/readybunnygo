@@ -6,6 +6,8 @@ use rand::prelude::*;
 use std::time::Duration;
 
 use crate::game::background::BackgroundPanel;
+use crate::game::background::GlobalData;
+use crate::game::background::ScrollSpeed;
 use crate::GameCamera;
 
 pub const BG_CELL_SIZE: f32 = 40.0;
@@ -16,13 +18,6 @@ pub const CAMERA_MOVE_TIME: u64 = 200;
 #[derive(Component)]
 pub struct Tile;
 
-#[derive(Resource)]
-pub struct GlobalData {
-    should_zoom: bool,
-    current_pos_y: f32,
-    speed: ScrollSpeed,
-}
-
 pub struct TransformProjectionLens {
     pub start: f32,
     pub end: f32,
@@ -32,49 +27,6 @@ impl Lens<OrthographicProjection> for TransformProjectionLens {
     fn lerp(&mut self, target: &mut OrthographicProjection, ratio: f32) {
         let value = self.start + (self.end - self.start) * ratio;
         target.scale = value;
-    }
-}
-
-#[derive(Debug)]
-enum ScrollSpeed {
-    Speed0,
-    Speed1,
-    Speed2,
-}
-
-impl ScrollSpeed {
-    // Helper function to increment the speed
-    fn increment(&mut self) {
-        *self = match *self {
-            ScrollSpeed::Speed0 => ScrollSpeed::Speed1,
-            ScrollSpeed::Speed1 => ScrollSpeed::Speed2,
-            ScrollSpeed::Speed2 => ScrollSpeed::Speed2,
-        };
-    }
-
-    // Helper function to decrement the speed
-    fn decrement(&mut self) {
-        *self = match *self {
-            ScrollSpeed::Speed0 => ScrollSpeed::Speed0,
-            ScrollSpeed::Speed1 => ScrollSpeed::Speed0,
-            ScrollSpeed::Speed2 => ScrollSpeed::Speed1,
-        };
-    }
-
-    fn get_zoom_scale(&self) -> f32 {
-        match *self {
-            ScrollSpeed::Speed0 => 0.95,
-            ScrollSpeed::Speed1 => 1.0,
-            ScrollSpeed::Speed2 => 1.5,
-        }
-    }
-
-    fn get_scroll_speed(&self) -> f32 {
-        match *self {
-            ScrollSpeed::Speed0 => 0.0,
-            ScrollSpeed::Speed1 => 5.0,
-            ScrollSpeed::Speed2 => 15.0,
-        }
     }
 }
 
