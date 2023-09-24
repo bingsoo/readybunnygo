@@ -4,6 +4,9 @@ use bevy_tweening::*;
 pub mod components;
 mod systems;
 
+#[derive(Component)]
+pub struct BackgroundPanel;
+
 use systems::*;
 
 pub struct BackgroundPlugin;

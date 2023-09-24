@@ -5,15 +5,13 @@ use bevy_tweening::{lens::*, *};
 use rand::prelude::*;
 use std::time::Duration;
 
+use crate::game::background::BackgroundPanel;
 use crate::GameCamera;
 
 pub const BG_CELL_SIZE: f32 = 40.0;
 pub const LAND_ROW_COUNT: i32 = 20;
 pub const LAND_COL_COUNT: i32 = 60;
 pub const CAMERA_MOVE_TIME: u64 = 200;
-
-#[derive(Component)]
-pub struct Parent;
 
 #[derive(Component)]
 pub struct Tile;
@@ -120,9 +118,11 @@ pub fn spawn_background(mut commands: Commands, asset_server: Res<AssetServer>, 
                 transform: Transform::from_translation(Vec3::new(0., begin_y, 0.)),
                 ..default()
             },
-            Parent,
+            BackgroundPanel,
         ))
         .id();
+
+    println!("Parent index = {}", parent.index());
 
     for i in 0..col_count {
         let h_pos = i as f32 * BG_CELL_SIZE;
@@ -134,6 +134,8 @@ pub fn spawn_background(mut commands: Commands, asset_server: Res<AssetServer>, 
             add_bg_cell(&mut commands, &asset_server, loc_left, parent, get_tile_type(j));
         }
     }
+
+    println!("spawn background 22");
 
     commands.insert_resource(GlobalData {
         current_pos_y: begin_y,
@@ -214,7 +216,7 @@ pub fn update_tiles(mut tile_position: Query<&mut Transform, With<Tile>>, global
     }
 }
 
-pub fn update_background(mut parent_position: Query<&mut Transform, With<Parent>>, mut global_data: ResMut<GlobalData>) {
+pub fn update_background(mut parent_position: Query<&mut Transform, With<BackgroundPanel>>, mut global_data: ResMut<GlobalData>) {
     let mut transform = parent_position.single_mut();
     transform.translation.y -= global_data.speed.get_scroll_speed();
     global_data.current_pos_y = transform.translation.y;
