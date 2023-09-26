@@ -9,8 +9,9 @@ pub struct BackgroundPanel;
 
 #[derive(Resource)]
 pub struct GlobalData {
+    pub current_pos_y: f32,
+    pub move_y: f32,
     should_zoom: bool,
-    current_pos_y: f32,
     speed: ScrollSpeed,
 }
 
@@ -50,7 +51,7 @@ impl ScrollSpeed {
 
     fn get_scroll_speed(&self) -> f32 {
         match *self {
-            ScrollSpeed::Speed0 => 0.0,
+            ScrollSpeed::Speed0 => 1.0,
             ScrollSpeed::Speed1 => 5.0,
             ScrollSpeed::Speed2 => 15.0,
         }

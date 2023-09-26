@@ -1,9 +1,9 @@
 use crate::game::background::BackgroundPanel;
 use bevy::prelude::*;
-
+use bevy::window::PrimaryWindow;
 use rand::Rng;
 
-//use crate::game::background::GlobalData;
+use crate::game::background::GlobalData;
 
 #[derive(Debug)]
 enum EnemyType {
@@ -36,18 +36,21 @@ impl EnemyType {
     }
 }
 
-pub const NUM_ENEMY: usize = 500;
+pub const NUM_ENEMY: usize = 10000;
 
 #[derive(Component)]
 pub struct EnemyShip;
 
-pub fn spawn_enemy(mut commands: Commands, asset_server: Res<AssetServer>, q: Query<Entity, With<BackgroundPanel>>) {
+pub fn spawn_enemy(mut commands: Commands, asset_server: Res<AssetServer>, q: Query<Entity, With<BackgroundPanel>>, window_query: Query<&Window, With<PrimaryWindow>>) {
     println!("spawn enemy");
 
     let bg = q.single();
+    let window = window_query.single();
+    let mut rng = rand::thread_rng();
 
     for i in 0..NUM_ENEMY {
-        let enemy_location = Vec3::new(0.0, i as f32 * 90.0 + 500.0, 10.);
+        let enemy_x: f32 = rng.gen_range(0.0..=window.width()) - window.width() * 0.5;
+        let enemy_location = Vec3::new(enemy_x, i as f32 * 5.0 + 900.0, 10.);
         let enemy_type = random_enemy_type();
         add_enemy(&mut commands, &asset_server, bg, enemy_location, enemy_type);
     }
@@ -57,20 +60,29 @@ pub fn spawn_enemy(mut commands: Commands, asset_server: Res<AssetServer>, q: Qu
     }
 }
 
-pub fn update_enemy(mut q: Query<&mut Transform, With<EnemyShip>>) {
+fn get_pos(loc: &Vec3, global_data: &Res<GlobalData>) -> Vec3 {
+    let current_loc = *loc - Vec3::new(00., global_data.move_y, 0.0);
+    current_loc
+}
+
+pub fn update_enemy(mut q: Query<&mut Transform, With<EnemyShip>>, global_data: Res<GlobalData>, window_query: Query<&Window, With<PrimaryWindow>>) {
+    let window = window_query.single();
     for mut transform in &mut q {
-        // if transform.translation.y + global_data.current_pos_y < -860.0 {
-        //     transform.translation.y += BG_CELL_SIZE * LAND_COL_COUNT as f32;
-        // }
-        transform.translation.y -= 5.0;
+        let current_loc = get_pos(&transform.translation, &global_data);
+        //println!("current loc =  {:?} - {:?} = {:?}", transform.translation, global_data.current_pos_y, current_loc);
+        if current_loc.y < window.height() + 500.0 {
+            transform.translation.y -= 1.0;
+        }
     }
+
+    //println!("global data in enemy plugin - move y =  {}", global_data.move_y);
 }
 
 fn add_enemy(commands: &mut Commands, asset_server: &Res<AssetServer>, bg_panel: Entity, loc: Vec3, enemy_type: EnemyType) {
     let enemy = commands
         .spawn((
             SpriteBundle {
-                sprite: Sprite { custom_size: Some(Vec2::new(40.0, 40.0)), ..default() },
+                sprite: Sprite { custom_size: Some(Vec2::new(70.0, 70.0)), ..default() },
                 texture: asset_server.load(enemy_type.get_image_file()),
                 transform: Transform::from_translation(loc),
                 ..Default::default()

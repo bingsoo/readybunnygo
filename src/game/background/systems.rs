@@ -91,6 +91,7 @@ pub fn spawn_background(mut commands: Commands, asset_server: Res<AssetServer>, 
 
     commands.insert_resource(GlobalData {
         current_pos_y: begin_y,
+        move_y: 0.0,
         speed: ScrollSpeed::Speed1,
         should_zoom: false,
     });
@@ -172,6 +173,7 @@ pub fn update_background(mut parent_position: Query<&mut Transform, With<Backgro
     let mut transform = parent_position.single_mut();
     transform.translation.y -= global_data.speed.get_scroll_speed();
     global_data.current_pos_y = transform.translation.y;
+    global_data.move_y += global_data.speed.get_scroll_speed();
 }
 
 pub fn speed_control(keycode: Res<Input<KeyCode>>, mut global_data: ResMut<GlobalData>) {
