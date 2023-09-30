@@ -6,6 +6,8 @@ use rand::Rng;
 use crate::game::background::GlobalData;
 use crate::game::enemy::EnemyShip;
 
+pub const NUM_ENEMY: usize = 1500;
+
 #[derive(Debug)]
 pub enum EnemyType {
     Type0,
@@ -40,19 +42,17 @@ impl EnemyType {
         match self {
             EnemyType::Type0 => 1.0,
             EnemyType::Type1 => 2.1,
-            EnemyType::Type2 => 2.4,
-            EnemyType::Type3 => 2.2,
-            EnemyType::Type4 => 2.5,
-            EnemyType::Type5 => 2.7,
-            EnemyType::Type6 => 3.0,
-            EnemyType::Type7 => 3.1,
-            EnemyType::Type8 => 4.0,
-            EnemyType::Type9 => 3.5,
+            EnemyType::Type2 => 3.4,
+            EnemyType::Type3 => 4.2,
+            EnemyType::Type4 => 5.5,
+            EnemyType::Type5 => 6.7,
+            EnemyType::Type6 => 7.0,
+            EnemyType::Type7 => 8.1,
+            EnemyType::Type8 => 9.0,
+            EnemyType::Type9 => 13.5,
         }
     }
 }
-
-pub const NUM_ENEMY: usize = 10000;
 
 pub fn spawn_enemy(mut commands: Commands, asset_server: Res<AssetServer>, q: Query<Entity, With<BackgroundPanel>>, window_query: Query<&Window, With<PrimaryWindow>>) {
     println!("spawn enemy");
@@ -63,7 +63,7 @@ pub fn spawn_enemy(mut commands: Commands, asset_server: Res<AssetServer>, q: Qu
 
     for i in 0..NUM_ENEMY {
         let enemy_x: f32 = rng.gen_range(0.0..=window.width()) - window.width() * 0.5;
-        let enemy_location = Vec3::new(enemy_x, i as f32 * 5.0 + 900.0, 10.);
+        let enemy_location = Vec3::new(enemy_x, i as f32 * 50.0 + 900.0, 10.);
         let enemy_type = random_enemy_type();
         add_enemy(&mut commands, &asset_server, bg, enemy_location, enemy_type);
     }
