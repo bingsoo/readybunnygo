@@ -5,8 +5,10 @@ use rand::Rng;
 
 use crate::game::background::GlobalData;
 
+use crate::game::enemy::EnemyShip;
+
 #[derive(Debug)]
-enum EnemyType {
+pub enum EnemyType {
     Type0,
     Type1,
     Type2,
@@ -34,12 +36,24 @@ impl EnemyType {
             EnemyType::Type9 => "ships/ship_0009.png".to_string(),
         }
     }
+
+    fn get_speed(&self) -> f32 {
+        match self {
+            EnemyType::Type0 => 1.0,
+            EnemyType::Type1 => 2.1,
+            EnemyType::Type2 => 2.4,
+            EnemyType::Type3 => 2.2,
+            EnemyType::Type4 => 2.5,
+            EnemyType::Type5 => 2.7,
+            EnemyType::Type6 => 3.0,
+            EnemyType::Type7 => 3.1,
+            EnemyType::Type8 => 4.0,
+            EnemyType::Type9 => 3.5,
+        }
+    }
 }
 
 pub const NUM_ENEMY: usize = 10000;
-
-#[derive(Component)]
-pub struct EnemyShip;
 
 pub fn spawn_enemy(mut commands: Commands, asset_server: Res<AssetServer>, q: Query<Entity, With<BackgroundPanel>>, window_query: Query<&Window, With<PrimaryWindow>>) {
     println!("spawn enemy");
@@ -65,17 +79,15 @@ fn get_pos(loc: &Vec3, global_data: &Res<GlobalData>) -> Vec3 {
     current_loc
 }
 
-pub fn update_enemy(mut q: Query<&mut Transform, With<EnemyShip>>, global_data: Res<GlobalData>, window_query: Query<&Window, With<PrimaryWindow>>) {
+pub fn update_enemy(mut enemy_query: Query<(&mut Transform, &EnemyShip)>, global_data: Res<GlobalData>, window_query: Query<&Window, With<PrimaryWindow>>) {
     let window = window_query.single();
-    for mut transform in &mut q {
+    for (mut transform, enemy) in enemy_query.iter_mut() {
         let current_loc = get_pos(&transform.translation, &global_data);
-        //println!("current loc =  {:?} - {:?} = {:?}", transform.translation, global_data.current_pos_y, current_loc);
+        let speed = enemy.enemy_type.get_speed();
         if current_loc.y < window.height() + 500.0 {
-            transform.translation.y -= 1.0;
+            transform.translation.y -= speed;
         }
     }
-
-    //println!("global data in enemy plugin - move y =  {}", global_data.move_y);
 }
 
 fn add_enemy(commands: &mut Commands, asset_server: &Res<AssetServer>, bg_panel: Entity, loc: Vec3, enemy_type: EnemyType) {
@@ -87,7 +99,7 @@ fn add_enemy(commands: &mut Commands, asset_server: &Res<AssetServer>, bg_panel:
                 transform: Transform::from_translation(loc),
                 ..Default::default()
             },
-            EnemyShip,
+            EnemyShip { enemy_type: enemy_type },
         ))
         .id();
 

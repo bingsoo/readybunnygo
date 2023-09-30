@@ -45,15 +45,15 @@ impl ScrollSpeed {
         match *self {
             ScrollSpeed::Speed0 => 0.95,
             ScrollSpeed::Speed1 => 1.0,
-            ScrollSpeed::Speed2 => 1.5,
+            ScrollSpeed::Speed2 => 1.1,
         }
     }
 
     fn get_scroll_speed(&self) -> f32 {
         match *self {
-            ScrollSpeed::Speed0 => 1.0,
-            ScrollSpeed::Speed1 => 5.0,
-            ScrollSpeed::Speed2 => 15.0,
+            ScrollSpeed::Speed0 => 0.5,
+            ScrollSpeed::Speed1 => 3.0,
+            ScrollSpeed::Speed2 => 8.0,
         }
     }
 }
