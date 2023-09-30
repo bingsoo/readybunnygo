@@ -74,8 +74,7 @@ pub fn spawn_enemy(mut commands: Commands, asset_server: Res<AssetServer>, q: Qu
 }
 
 fn get_pos(loc: &Vec3, global_data: &Res<GlobalData>) -> Vec3 {
-    let current_loc = *loc - Vec3::new(00., global_data.move_y, 0.0);
-    current_loc
+    *loc - Vec3::new(00., global_data.move_y, 0.0)
 }
 
 pub fn update_enemy(mut enemy_query: Query<(&mut Transform, &EnemyShip)>, global_data: Res<GlobalData>, window_query: Query<&Window, With<PrimaryWindow>>) {
@@ -98,7 +97,7 @@ fn add_enemy(commands: &mut Commands, asset_server: &Res<AssetServer>, bg_panel:
                 transform: Transform::from_translation(loc),
                 ..Default::default()
             },
-            EnemyShip { enemy_type: enemy_type },
+            EnemyShip { enemy_type },
         ))
         .id();
 
