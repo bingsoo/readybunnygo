@@ -4,7 +4,6 @@ use bevy::window::PrimaryWindow;
 use rand::Rng;
 
 use crate::game::background::GlobalData;
-
 use crate::game::enemy::EnemyShip;
 
 #[derive(Debug)]
