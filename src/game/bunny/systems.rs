@@ -2,6 +2,8 @@ use bevy::prelude::*;
 
 use super::components::Bunny;
 
+pub const BUNNY_SPEED: f32 = 550.0;
+
 pub fn spawn_bunny(mut commands: Commands, asset_server: Res<AssetServer>) {
     println!("spawn bunny !");
 
@@ -18,26 +20,17 @@ pub fn spawn_bunny(mut commands: Commands, asset_server: Res<AssetServer>) {
 
 pub fn update_bunny(mut query: Query<&mut Transform, With<Bunny>>, keyboard_input: Res<Input<KeyCode>>, time: Res<Time>) {
     if let Ok(mut transform) = query.get_single_mut() {
-        let mut direction = Vec3::ZERO;
-
         if keyboard_input.pressed(KeyCode::A) {
-            direction += Vec3::new(-1.0, 0.0, 0.0);
-            //println!("update bunny !");
-        }
-        if keyboard_input.pressed(KeyCode::D) {
-            direction += Vec3::new(1.0, 0.0, 0.0);
+            transform.translation.x -= BUNNY_SPEED * time.delta_seconds();
         }
         if keyboard_input.pressed(KeyCode::W) {
-            direction += Vec3::new(0.0, 1.0, 0.0);
+            transform.translation.y += BUNNY_SPEED * time.delta_seconds();
+        }
+        if keyboard_input.pressed(KeyCode::D) {
+            transform.translation.x += BUNNY_SPEED * time.delta_seconds();
         }
         if keyboard_input.pressed(KeyCode::S) {
-            direction += Vec3::new(0.0, -1.0, 0.0);
+            transform.translation.y -= BUNNY_SPEED * time.delta_seconds();
         }
-
-        if direction.length() > 0.0 {
-            direction = direction.normalize();
-        }
-
-        transform.translation += direction * 550.0 * time.delta_seconds();
     }
 }
