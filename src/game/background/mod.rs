@@ -43,17 +43,17 @@ impl ScrollSpeed {
 
     fn get_zoom_scale(&self) -> f32 {
         match *self {
-            ScrollSpeed::Speed0 => 0.95,
+            ScrollSpeed::Speed0 => 0.99,
             ScrollSpeed::Speed1 => 1.0,
-            ScrollSpeed::Speed2 => 1.1,
+            ScrollSpeed::Speed2 => 1.05,
         }
     }
 
     fn get_scroll_speed(&self) -> f32 {
         match *self {
-            ScrollSpeed::Speed0 => 0.5,
+            ScrollSpeed::Speed0 => 0.8,
             ScrollSpeed::Speed1 => 3.0,
-            ScrollSpeed::Speed2 => 8.0,
+            ScrollSpeed::Speed2 => 18.0,
         }
     }
 }
