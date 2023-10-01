@@ -53,7 +53,7 @@ impl ScrollSpeed {
         match *self {
             ScrollSpeed::Speed0 => 0.8,
             ScrollSpeed::Speed1 => 3.0,
-            ScrollSpeed::Speed2 => 18.0,
+            ScrollSpeed::Speed2 => 9.0,
         }
     }
 }
