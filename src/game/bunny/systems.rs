@@ -17,14 +17,12 @@ pub fn spawn_bunny(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 
 pub fn update_bunny(mut query: Query<&mut Transform, With<Bunny>>, keyboard_input: Res<Input<KeyCode>>, time: Res<Time>) {
-    //for (mut bunny, mut transform) in query.iter_mut() {}
-
     if let Ok(mut transform) = query.get_single_mut() {
         let mut direction = Vec3::ZERO;
 
         if keyboard_input.pressed(KeyCode::A) {
             direction += Vec3::new(-1.0, 0.0, 0.0);
-            println!("update bunny !");
+            //println!("update bunny !");
         }
         if keyboard_input.pressed(KeyCode::D) {
             direction += Vec3::new(1.0, 0.0, 0.0);
@@ -40,8 +38,6 @@ pub fn update_bunny(mut query: Query<&mut Transform, With<Bunny>>, keyboard_inpu
             direction = direction.normalize();
         }
 
-        println!("direction {:?}", direction);
-        transform.translation += direction * 500.0 * time.delta_seconds();
-        println!("transform {:?}", transform.translation);
+        transform.translation += direction * 550.0 * time.delta_seconds();
     }
 }
