@@ -13,6 +13,8 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(BackgroundPlugin).add_plugins(EnemyPlugin).add_plugins(BunnyPlugin);
+        app.add_plugins(BackgroundPlugin)
+            .add_plugins(EnemyPlugin)
+            .add_plugins(BunnyPlugin);
     }
 }

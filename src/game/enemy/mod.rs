@@ -14,6 +14,7 @@ pub struct EnemyShip {
 
 impl Plugin for EnemyPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(PostStartup, spawn_enemy).add_systems(Update, update_enemy);
+        app.add_systems(PostStartup, spawn_enemy)
+            .add_systems(Update, update_enemy);
     }
 }

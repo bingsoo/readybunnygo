@@ -54,7 +54,12 @@ impl EnemyType {
     }
 }
 
-pub fn spawn_enemy(mut commands: Commands, asset_server: Res<AssetServer>, q: Query<Entity, With<BackgroundPanel>>, window_query: Query<&Window, With<PrimaryWindow>>) {
+pub fn spawn_enemy(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    q: Query<Entity, With<BackgroundPanel>>,
+    window_query: Query<&Window, With<PrimaryWindow>>,
+) {
     println!("spawn enemy");
 
     let bg = q.single();
@@ -77,7 +82,11 @@ fn get_pos(loc: &Vec3, global_data: &Res<GlobalData>) -> Vec3 {
     *loc - Vec3::new(00., global_data.move_y, 0.0)
 }
 
-pub fn update_enemy(mut enemy_query: Query<(&mut Transform, &EnemyShip)>, global_data: Res<GlobalData>, window_query: Query<&Window, With<PrimaryWindow>>) {
+pub fn update_enemy(
+    mut enemy_query: Query<(&mut Transform, &EnemyShip)>,
+    global_data: Res<GlobalData>,
+    window_query: Query<&Window, With<PrimaryWindow>>,
+) {
     let window = window_query.single();
     for (mut transform, enemy) in enemy_query.iter_mut() {
         let current_loc = get_pos(&transform.translation, &global_data);
@@ -88,11 +97,20 @@ pub fn update_enemy(mut enemy_query: Query<(&mut Transform, &EnemyShip)>, global
     }
 }
 
-fn add_enemy(commands: &mut Commands, asset_server: &Res<AssetServer>, bg_panel: Entity, loc: Vec3, enemy_type: EnemyType) {
+fn add_enemy(
+    commands: &mut Commands,
+    asset_server: &Res<AssetServer>,
+    bg_panel: Entity,
+    loc: Vec3,
+    enemy_type: EnemyType,
+) {
     let enemy = commands
         .spawn((
             SpriteBundle {
-                sprite: Sprite { custom_size: Some(Vec2::new(70.0, 70.0)), ..default() },
+                sprite: Sprite {
+                    custom_size: Some(Vec2::new(70.0, 70.0)),
+                    ..default()
+                },
                 texture: asset_server.load(enemy_type.get_image_file()),
                 transform: Transform::from_translation(loc),
                 ..Default::default()

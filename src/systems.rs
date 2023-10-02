@@ -15,5 +15,11 @@ pub fn spawn_camera(
     //     ..default()
     // });
 
-    commands.spawn((Camera2dBundle { camera: Camera { ..default() }, ..default() }, GameCamera));
+    commands.spawn((
+        Camera2dBundle {
+            camera: Camera { ..default() },
+            ..default()
+        },
+        GameCamera,
+    ));
 }
