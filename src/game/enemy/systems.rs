@@ -1,9 +1,8 @@
-use crate::game::background::BackgroundPanel;
+use crate::prelude::*;
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 use rand::Rng;
 
-use crate::game::background::GlobalData;
 use crate::game::enemy::EnemyShip;
 
 pub const NUM_ENEMY: usize = 1500;
@@ -97,13 +96,7 @@ pub fn update_enemy(
     }
 }
 
-fn add_enemy(
-    commands: &mut Commands,
-    asset_server: &Res<AssetServer>,
-    bg_panel: Entity,
-    loc: Vec3,
-    enemy_type: EnemyType,
-) {
+fn add_enemy(commands: &mut Commands, asset_server: &Res<AssetServer>, bg_panel: Entity, loc: Vec3, enemy_type: EnemyType) {
     let enemy = commands
         .spawn((
             SpriteBundle {

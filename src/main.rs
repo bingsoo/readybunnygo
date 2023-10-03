@@ -4,13 +4,18 @@ mod game;
 use game::GamePlugin;
 
 // modules
+mod background;
 mod components;
+mod resources;
 
 // systems and etc
 mod prelude {
+    pub use crate::background::*;
     pub use crate::components::*;
+    pub use crate::resources::*;
     pub use bevy::prelude::*;
     pub use bevy::window::{PresentMode, WindowTheme};
+    pub use bevy_tweening::*;
 }
 
 use prelude::*;

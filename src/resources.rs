@@ -1,18 +1,11 @@
-use bevy::prelude::*;
-use bevy_tweening::*;
-
-pub mod components;
-mod systems;
-
-#[derive(Component)]
-pub struct BackgroundPanel;
+use crate::prelude::*;
 
 #[derive(Resource)]
 pub struct GlobalData {
     pub current_pos_y: f32,
     pub move_y: f32,
-    should_zoom: bool,
-    speed: ScrollSpeed,
+    pub should_zoom: bool,
+    pub speed: ScrollSpeed,
 }
 
 #[derive(Debug)]
@@ -24,7 +17,7 @@ pub enum ScrollSpeed {
 
 impl ScrollSpeed {
     // Helper function to increment the speed
-    fn increment(&mut self) {
+    pub fn increment(&mut self) {
         *self = match *self {
             ScrollSpeed::Speed0 => ScrollSpeed::Speed1,
             ScrollSpeed::Speed1 => ScrollSpeed::Speed2,
@@ -33,7 +26,7 @@ impl ScrollSpeed {
     }
 
     // Helper function to decrement the speed
-    fn decrement(&mut self) {
+    pub fn decrement(&mut self) {
         *self = match *self {
             ScrollSpeed::Speed0 => ScrollSpeed::Speed0,
             ScrollSpeed::Speed1 => ScrollSpeed::Speed0,
@@ -41,7 +34,7 @@ impl ScrollSpeed {
         };
     }
 
-    fn get_zoom_scale(&self) -> f32 {
+    pub fn get_zoom_scale(&self) -> f32 {
         match *self {
             ScrollSpeed::Speed0 => 0.99,
             ScrollSpeed::Speed1 => 1.0,
@@ -49,27 +42,11 @@ impl ScrollSpeed {
         }
     }
 
-    fn get_scroll_speed(&self) -> f32 {
+    pub fn get_scroll_speed(&self) -> f32 {
         match *self {
             ScrollSpeed::Speed0 => 0.8,
             ScrollSpeed::Speed1 => 3.0,
             ScrollSpeed::Speed2 => 9.0,
         }
-    }
-}
-
-use systems::*;
-
-pub struct BackgroundPlugin;
-
-impl Plugin for BackgroundPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_plugins(TweeningPlugin)
-            .add_systems(Startup, spawn_background)
-            .add_systems(Update, update_background)
-            .add_systems(Update, update_tiles)
-            .add_systems(Update, speed_control)
-            .add_systems(Update, update_camera)
-            .add_systems(Update, component_animator_system::<OrthographicProjection>);
     }
 }
