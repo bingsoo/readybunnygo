@@ -3,6 +3,12 @@ use crate::prelude::*;
 mod systems;
 use systems::*;
 
+mod tile;
+pub use tile::*;
+
+mod shared;
+pub use shared::*;
+
 pub struct BackgroundPlugin;
 
 impl Plugin for BackgroundPlugin {

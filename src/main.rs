@@ -16,6 +16,7 @@ mod prelude {
     pub use bevy::prelude::*;
     pub use bevy::window::{PresentMode, WindowTheme};
     pub use bevy_tweening::*;
+    pub use rand::prelude::*;
 }
 
 use prelude::*;
