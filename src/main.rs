@@ -1,15 +1,25 @@
-use bevy::{
-    prelude::*,
-    window::{PresentMode, WindowTheme},
-};
+#![warn(clippy::pedantic)]
 
 mod game;
-mod systems;
 use game::GamePlugin;
-use systems::*;
 
-#[derive(Component)]
-pub struct GameCamera;
+mod components;
+mod prelude {
+    pub use crate::components::*;
+    pub use bevy::prelude::*;
+    pub use bevy::window::{PresentMode, WindowTheme};
+}
+
+use prelude::*;
+
+fn setup(mut commands: Commands) {
+    commands
+        .spawn(Camera2dBundle {
+            camera: Camera { ..default() },
+            ..default()
+        })
+        .insert(GameCamera);
+}
 
 fn main() {
     App::new()
@@ -29,8 +39,8 @@ fn main() {
                     ..default()
                 }),
         )
+        .add_systems(Startup, setup)
         .add_plugins(GamePlugin)
-        .add_systems(Startup, spawn_camera)
         .add_systems(Update, bevy::window::close_on_esc)
         .run();
 }
