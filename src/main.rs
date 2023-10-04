@@ -1,11 +1,9 @@
 #![warn(clippy::pedantic)]
 
-mod game;
-use game::GamePlugin;
-
 // modules
 mod background;
 mod components;
+mod game;
 mod resources;
 mod tweening;
 
@@ -13,6 +11,7 @@ mod tweening;
 mod prelude {
     pub use crate::background::*;
     pub use crate::components::*;
+    pub use crate::game::GamePlugin;
     pub use crate::resources::*;
     pub use crate::tweening::*;
     pub use bevy::prelude::*;
@@ -42,9 +41,8 @@ fn main() {
             }),
             ..default()
         }))
-        .add_plugins(TweeningPlugin)
         .add_systems(Startup, setup)
+        .add_plugins(TweeningPlugin)
         .add_plugins(GamePlugin)
-        .add_systems(Update, bevy::window::close_on_esc)
         .run();
 }
