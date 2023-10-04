@@ -42,6 +42,7 @@ fn main() {
             }),
             ..default()
         }))
+        .add_plugins(TweeningPlugin)
         .add_systems(Startup, setup)
         .add_plugins(GamePlugin)
         .add_systems(Update, bevy::window::close_on_esc)

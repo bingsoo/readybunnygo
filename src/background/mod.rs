@@ -13,8 +13,7 @@ pub struct BackgroundPlugin;
 
 impl Plugin for BackgroundPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(TweeningPlugin)
-            .add_systems(Startup, spawn_background)
+        app.add_systems(Startup, spawn_background)
             .add_systems(Update, update_background)
             .add_systems(Update, tile::update_tiles)
             .add_systems(Update, update_user_input)
