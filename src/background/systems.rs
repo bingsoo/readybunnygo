@@ -2,20 +2,7 @@ use crate::prelude::*;
 
 use bevy::render::prelude::SpatialBundle;
 use bevy::window::PrimaryWindow;
-use bevy_tweening::{lens::*, *};
 use std::time::Duration;
-
-pub struct TransformProjectionLens {
-    pub start: f32,
-    pub end: f32,
-}
-
-impl Lens<OrthographicProjection> for TransformProjectionLens {
-    fn lerp(&mut self, target: &mut OrthographicProjection, ratio: f32) {
-        let value = self.start + (self.end - self.start) * ratio;
-        target.scale = value;
-    }
-}
 
 pub fn spawn_background(mut commands: Commands, asset_server: Res<AssetServer>, window_query: Query<&Window, With<PrimaryWindow>>) {
     let window = window_query.get_single().unwrap();
@@ -37,8 +24,6 @@ pub fn spawn_background(mut commands: Commands, asset_server: Res<AssetServer>, 
         ))
         .id();
 
-    println!("Parent index = {}", parent.index());
-
     for i in 0..col_count {
         let h_pos = i as f32 * BG_CELL_SIZE;
         add_bg_cell(&mut commands, &asset_server, Vec3::new(0., h_pos, 0.), parent, get_tile_type(0));
@@ -49,8 +34,6 @@ pub fn spawn_background(mut commands: Commands, asset_server: Res<AssetServer>, 
             add_bg_cell(&mut commands, &asset_server, loc_left, parent, get_tile_type(j));
         }
     }
-
-    println!("spawn background 22");
 
     commands.insert_resource(GlobalData {
         current_pos_y: begin_y,
@@ -107,7 +90,7 @@ pub fn update_background(mut parent_position: Query<&mut Transform, With<Backgro
     global_data.move_y += global_data.speed.get_scroll_speed();
 }
 
-pub fn speed_control(keycode: Res<Input<KeyCode>>, mut global_data: ResMut<GlobalData>) {
+pub fn update_user_input(keycode: Res<Input<KeyCode>>, mut global_data: ResMut<GlobalData>) {
     let mut change_made = false;
     if keycode.just_pressed(KeyCode::Up) {
         global_data.speed.increment();

@@ -7,12 +7,14 @@ use game::GamePlugin;
 mod background;
 mod components;
 mod resources;
+mod tweening;
 
 // systems and etc
 mod prelude {
     pub use crate::background::*;
     pub use crate::components::*;
     pub use crate::resources::*;
+    pub use crate::tweening::*;
     pub use bevy::prelude::*;
     pub use bevy::window::{PresentMode, WindowTheme};
     pub use bevy_tweening::*;
