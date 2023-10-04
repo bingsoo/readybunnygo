@@ -1,4 +1,4 @@
-//#![warn(clippy::pedantic)]
+#![warn(clippy::pedantic)]
 
 mod game;
 use game::GamePlugin;

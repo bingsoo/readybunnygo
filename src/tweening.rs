@@ -1,7 +1,5 @@
 use crate::prelude::*;
 
-use bevy_tweening::{lens::*, *};
-
 pub struct TransformProjectionLens {
     pub start: f32,
     pub end: f32,
