@@ -16,7 +16,7 @@ mod prelude {
     pub use crate::resources::*;
     pub use crate::tweening::*;
     pub use bevy::prelude::*;
-    pub use bevy::window::{PresentMode, WindowTheme};
+    pub use bevy::window::{PresentMode, PrimaryWindow, WindowTheme};
     pub use bevy_tweening::*;
     pub use rand::prelude::*;
 }

@@ -1,57 +1,6 @@
 use crate::prelude::*;
-use bevy::prelude::*;
-use bevy::window::PrimaryWindow;
-use rand::Rng;
 
-use crate::game::enemy::EnemyShip;
-
-pub const NUM_ENEMY: usize = 1500;
-
-#[derive(Debug)]
-pub enum EnemyType {
-    Type0,
-    Type1,
-    Type2,
-    Type3,
-    Type4,
-    Type5,
-    Type6,
-    Type7,
-    Type8,
-    Type9,
-}
-
-impl EnemyType {
-    fn get_image_file(&self) -> String {
-        match self {
-            EnemyType::Type0 => "ships/ship_0000.png".to_string(),
-            EnemyType::Type1 => "ships/ship_0001.png".to_string(),
-            EnemyType::Type2 => "ships/ship_0002.png".to_string(),
-            EnemyType::Type3 => "ships/ship_0003.png".to_string(),
-            EnemyType::Type4 => "ships/ship_0004.png".to_string(),
-            EnemyType::Type5 => "ships/ship_0005.png".to_string(),
-            EnemyType::Type6 => "ships/ship_0006.png".to_string(),
-            EnemyType::Type7 => "ships/ship_0007.png".to_string(),
-            EnemyType::Type8 => "ships/ship_0008.png".to_string(),
-            EnemyType::Type9 => "ships/ship_0009.png".to_string(),
-        }
-    }
-
-    fn get_speed(&self) -> f32 {
-        match self {
-            EnemyType::Type0 => 1.0,
-            EnemyType::Type1 => 2.1,
-            EnemyType::Type2 => 3.4,
-            EnemyType::Type3 => 4.2,
-            EnemyType::Type4 => 5.5,
-            EnemyType::Type5 => 6.7,
-            EnemyType::Type6 => 7.0,
-            EnemyType::Type7 => 8.1,
-            EnemyType::Type8 => 9.0,
-            EnemyType::Type9 => 13.5,
-        }
-    }
-}
+const NUM_ENEMY: usize = 1500;
 
 pub fn spawn_enemy(
     mut commands: Commands,
