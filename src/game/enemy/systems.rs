@@ -26,10 +26,6 @@ pub fn spawn_enemy(
     }
 }
 
-fn get_pos(loc: &Vec3, global_data: &Res<GlobalData>) -> Vec3 {
-    *loc - Vec3::new(00., global_data.move_y, 0.0)
-}
-
 pub fn update_enemy(
     mut enemy_query: Query<(&mut Transform, &EnemyShip)>,
     global_data: Res<GlobalData>,
@@ -37,7 +33,7 @@ pub fn update_enemy(
 ) {
     let window = window_query.single();
     for (mut transform, enemy) in enemy_query.iter_mut() {
-        let current_loc = get_pos(&transform.translation, &global_data);
+        let current_loc = get_real_location(&transform.translation, &global_data);
         let speed = enemy.enemy_type.get_speed();
         if current_loc.y < window.height() + 500.0 {
             transform.translation.y -= speed;
@@ -45,7 +41,13 @@ pub fn update_enemy(
     }
 }
 
-fn add_enemy(commands: &mut Commands, asset_server: &Res<AssetServer>, bg_panel: Entity, loc: Vec3, enemy_type: EnemyType) {
+fn add_enemy(
+    commands: &mut Commands,
+    asset_server: &Res<AssetServer>,
+    bg_panel: Entity,
+    loc: Vec3,
+    enemy_type: EnemyType,
+) {
     let enemy = commands
         .spawn((
             SpriteBundle {

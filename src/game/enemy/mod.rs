@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 
 mod systems;
-
 use systems::*;
 
 pub struct EnemyPlugin;

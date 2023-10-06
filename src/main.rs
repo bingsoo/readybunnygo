@@ -1,4 +1,4 @@
-#![warn(clippy::pedantic)]
+//#![warn(clippy::pedantic)]
 
 // modules
 mod background;
@@ -6,6 +6,7 @@ mod components;
 mod game;
 mod resources;
 mod tweening;
+mod utils;
 
 // systems and etc
 mod prelude {
@@ -14,6 +15,7 @@ mod prelude {
     pub use crate::game::GamePlugin;
     pub use crate::resources::*;
     pub use crate::tweening::*;
+    pub use crate::utils::*;
     pub use bevy::prelude::*;
     pub use bevy::window::{PresentMode, PrimaryWindow, WindowTheme};
     pub use bevy_tweening::*;
