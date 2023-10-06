@@ -82,3 +82,5 @@ fn random_enemy_type() -> EnemyType {
         _ => EnemyType::Type9, // Handle any other value (shouldn't happen in this case).
     }
 }
+
+// test
