@@ -1,5 +1,3 @@
-use crate::prelude::*;
-
 #[derive(Debug)]
 pub enum ScrollSpeed {
     Speed0,
