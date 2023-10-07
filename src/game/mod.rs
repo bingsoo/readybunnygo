@@ -1,8 +1,10 @@
+pub mod background;
 pub mod bunny;
 pub mod enemy;
 
 use crate::prelude::*;
 
+use background::BackgroundPlugin;
 use bunny::BunnyPlugin;
 use enemy::EnemyPlugin;
 

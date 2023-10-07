@@ -1,5 +1,7 @@
 use crate::prelude::*;
 
+use super::shared::*;
+
 pub fn get_tile_type(row_pos: i32) -> TileType {
     let mut rng = rand::thread_rng();
     let rand_number: usize = rng.gen_range(0..=500);

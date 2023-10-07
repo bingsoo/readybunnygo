@@ -4,9 +4,21 @@ use bevy::render::prelude::SpatialBundle;
 use bevy::window::PrimaryWindow;
 use std::time::Duration;
 
-pub fn spawn_background(mut commands: Commands, asset_server: Res<AssetServer>, window_query: Query<&Window, With<PrimaryWindow>>) {
+use super::shared::*;
+use super::tile::get_tile_type;
+
+pub fn spawn_background(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    window_query: Query<&Window, With<PrimaryWindow>>,
+) {
     let window = window_query.get_single().unwrap();
-    println!("window size = {} / {} = {}", window.width(), BG_CELL_SIZE, window.width() / BG_CELL_SIZE);
+    println!(
+        "window size = {} / {} = {}",
+        window.width(),
+        BG_CELL_SIZE,
+        window.width() / BG_CELL_SIZE
+    );
     let row_side_count = (window.width() / BG_CELL_SIZE) as i32 / 2 + 1 + 13;
     let col_count = LAND_COL_COUNT; //(window.height() / BG_CELL_SIZE) as i32 + 1;
     let begin_y = window.height() * -1.0 * 0.5;
@@ -26,7 +38,13 @@ pub fn spawn_background(mut commands: Commands, asset_server: Res<AssetServer>, 
 
     for i in 0..col_count {
         let h_pos = i as f32 * BG_CELL_SIZE;
-        add_bg_cell(&mut commands, &asset_server, Vec3::new(0., h_pos, 0.), parent, get_tile_type(0));
+        add_bg_cell(
+            &mut commands,
+            &asset_server,
+            Vec3::new(0., h_pos, 0.),
+            parent,
+            get_tile_type(0),
+        );
         for j in 1..row_side_count {
             let loc_right = Vec3::new(j as f32 * BG_CELL_SIZE, h_pos, 0.);
             let loc_left = Vec3::new(-loc_right.x, loc_right.y, loc_right.z);
@@ -44,7 +62,13 @@ pub fn spawn_background(mut commands: Commands, asset_server: Res<AssetServer>, 
     println!("starting pos y = {}", begin_y);
 }
 
-fn add_bg_cell(commands: &mut Commands, asset_server: &Res<AssetServer>, loc: Vec3, parent: Entity, type_type: TileType) {
+fn add_bg_cell(
+    commands: &mut Commands,
+    asset_server: &Res<AssetServer>,
+    loc: Vec3,
+    parent: Entity,
+    type_type: TileType,
+) {
     let file_name = type_type.as_str();
     let sprite = commands
         .spawn((
@@ -64,7 +88,11 @@ fn add_bg_cell(commands: &mut Commands, asset_server: &Res<AssetServer>, loc: Ve
     commands.entity(parent).push_children(&[sprite]);
 }
 
-pub fn update_camera(q: Query<(Entity, &OrthographicProjection), With<GameCamera>>, mut global_data: ResMut<GlobalData>, mut commands: Commands) {
+pub fn update_camera(
+    q: Query<(Entity, &OrthographicProjection), With<GameCamera>>,
+    mut global_data: ResMut<GlobalData>,
+    mut commands: Commands,
+) {
     let (id, projection) = q.single();
     if global_data.should_zoom {
         global_data.should_zoom = false;
@@ -79,11 +107,18 @@ pub fn update_camera(q: Query<(Entity, &OrthographicProjection), With<GameCamera
             },
         );
         commands.entity(id).insert(Animator::new(zoom_tween));
-        println!("camera scale = {} -> {}", projection.scale, global_data.speed.get_zoom_scale());
+        println!(
+            "camera scale = {} -> {}",
+            projection.scale,
+            global_data.speed.get_zoom_scale()
+        );
     }
 }
 
-pub fn update_background(mut parent_position: Query<&mut Transform, With<BackgroundPanel>>, mut global_data: ResMut<GlobalData>) {
+pub fn update_background(
+    mut parent_position: Query<&mut Transform, With<BackgroundPanel>>,
+    mut global_data: ResMut<GlobalData>,
+) {
     let mut transform = parent_position.single_mut();
     transform.translation.y -= global_data.speed.get_scroll_speed();
     global_data.current_pos_y = transform.translation.y;
