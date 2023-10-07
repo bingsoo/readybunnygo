@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use bevy::app::AppExit;
 
 pub const BUNNY_SPEED: f32 = 550.0;
 
@@ -19,19 +20,24 @@ pub fn spawn_bunny(mut commands: Commands, asset_server: Res<AssetServer>) {
     ));
 }
 
-pub fn update_bunny(mut query: Query<&mut Transform, With<Bunny>>, keyboard_input: Res<Input<KeyCode>>, time: Res<Time>) {
+pub fn update_bunny(
+    mut query: Query<&mut Transform, With<Bunny>>,
+    keyboard_input: Res<Input<KeyCode>>,
+    time: Res<Time>,
+    mut exit: EventWriter<AppExit>,
+) {
+    let mut translation = Vec3::ZERO;
+    for key in keyboard_input.get_pressed() {
+        match key {
+            KeyCode::A => translation.x -= BUNNY_SPEED * time.delta_seconds(),
+            KeyCode::D => translation.x += BUNNY_SPEED * time.delta_seconds(),
+            KeyCode::W => translation.y += BUNNY_SPEED * time.delta_seconds(),
+            KeyCode::S => translation.y -= BUNNY_SPEED * time.delta_seconds(),
+            KeyCode::Escape => exit.send(AppExit),
+            _ => {},
+        }
+    }
     if let Ok(mut transform) = query.get_single_mut() {
-        if keyboard_input.pressed(KeyCode::A) {
-            transform.translation.x -= BUNNY_SPEED * time.delta_seconds();
-        }
-        if keyboard_input.pressed(KeyCode::W) {
-            transform.translation.y += BUNNY_SPEED * time.delta_seconds();
-        }
-        if keyboard_input.pressed(KeyCode::D) {
-            transform.translation.x += BUNNY_SPEED * time.delta_seconds();
-        }
-        if keyboard_input.pressed(KeyCode::S) {
-            transform.translation.y -= BUNNY_SPEED * time.delta_seconds();
-        }
+        transform.translation += translation;
     }
 }

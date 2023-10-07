@@ -16,3 +16,6 @@ pub struct BackgroundPanel;
 
 #[derive(Component)]
 pub struct Tile;
+
+#[derive(Component)]
+pub struct BulletObject;

@@ -14,7 +14,6 @@ impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(BackgroundPlugin)
             .add_plugins(EnemyPlugin)
-            .add_plugins(BunnyPlugin)
-            .add_systems(Update, bevy::window::close_on_esc);
+            .add_plugins(BunnyPlugin);
     }
 }
