@@ -26,7 +26,7 @@ pub fn get_tile_type(row_pos: i32) -> TileType {
     tile_type
 }
 
-pub fn update_tiles(mut tile_position: Query<&mut Transform, With<Tile>>, global_data: Res<GlobalData>) {
+pub fn update_tiles(mut tile_position: Query<&mut Transform, With<BackgroundTile>>, global_data: Res<GlobalData>) {
     for mut transform in &mut tile_position {
         if transform.translation.y + global_data.current_pos_y < -860.0 {
             transform.translation.y += BG_CELL_SIZE * LAND_COL_COUNT as f32;

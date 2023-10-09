@@ -26,14 +26,12 @@ pub fn spawn_background(
     println!("spawn background");
 
     let parent = commands
-        .spawn((
-            SpatialBundle {
-                visibility: Visibility::Visible,
-                transform: Transform::from_translation(Vec3::new(0., begin_y, 0.)),
-                ..default()
-            },
-            BackgroundPanel,
-        ))
+        .spawn(SpatialBundle {
+            visibility: Visibility::Visible,
+            transform: Transform::from_translation(Vec3::new(0., begin_y, 0.)),
+            ..default()
+        })
+        .insert(BackgroundPanel)
         .id();
 
     for i in 0..col_count {
@@ -71,18 +69,16 @@ fn add_bg_cell(
 ) {
     let file_name = type_type.as_str();
     let sprite = commands
-        .spawn((
-            SpriteBundle {
-                sprite: Sprite {
-                    custom_size: Some(Vec2::new(BG_CELL_SIZE, BG_CELL_SIZE)),
-                    ..default()
-                },
-                texture: asset_server.load(file_name),
-                transform: Transform::from_translation(loc),
-                ..Default::default()
+        .spawn(SpriteBundle {
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(BG_CELL_SIZE, BG_CELL_SIZE)),
+                ..default()
             },
-            Tile,
-        ))
+            texture: asset_server.load(file_name),
+            transform: Transform::from_translation(loc),
+            ..Default::default()
+        })
+        .insert(BackgroundTile)
         .id();
 
     commands.entity(parent).push_children(&[sprite]);

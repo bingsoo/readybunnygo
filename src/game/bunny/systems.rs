@@ -2,12 +2,13 @@ use crate::prelude::*;
 use bevy::app::AppExit;
 
 pub const BUNNY_SPEED: f32 = 550.0;
+pub const PRELOAD_BULLET_COUNT: usize = 500;
 
 pub fn spawn_bunny(mut commands: Commands, asset_server: Res<AssetServer>) {
     println!("spawn bunny !");
 
-    commands.spawn((
-        SpriteBundle {
+    commands
+        .spawn(SpriteBundle {
             sprite: Sprite {
                 custom_size: Some(Vec2::new(70.0, 70.0)),
                 ..default()
@@ -15,9 +16,12 @@ pub fn spawn_bunny(mut commands: Commands, asset_server: Res<AssetServer>) {
             texture: asset_server.load("ships/player_001.png"),
             transform: Transform::from_translation(Vec3 { x: 0.0, y: 0.0, z: 9.0 }),
             ..Default::default()
-        },
-        Bunny,
-    ));
+        })
+        .insert(Bunny);
+
+    for _ in 0..PRELOAD_BULLET_COUNT {
+        pre_spawn_bullets(&mut commands, &asset_server);
+    }
 }
 
 pub fn update_bunny(
@@ -40,4 +44,20 @@ pub fn update_bunny(
     if let Ok(mut transform) = query.get_single_mut() {
         transform.translation += translation;
     }
+}
+
+fn pre_spawn_bullets(commands: &mut Commands, asset_server: &Res<AssetServer>) {
+    commands.spawn((
+        SpriteBundle {
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(10.0, 10.0)),
+                ..default()
+            },
+            texture: asset_server.load("bullets/bullet.png"),
+            transform: Transform::from_translation(Vec3 { x: 0.0, y: 0.0, z: 9.0 }),
+            visibility: Visibility::Hidden,
+            ..Default::default()
+        },
+        BulletObject,
+    ));
 }

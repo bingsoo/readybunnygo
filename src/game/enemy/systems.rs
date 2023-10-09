@@ -49,18 +49,16 @@ fn add_enemy(
     enemy_type: EnemyType,
 ) {
     let enemy = commands
-        .spawn((
-            SpriteBundle {
-                sprite: Sprite {
-                    custom_size: Some(Vec2::new(70.0, 70.0)),
-                    ..default()
-                },
-                texture: asset_server.load(enemy_type.get_image_file()),
-                transform: Transform::from_translation(loc),
-                ..Default::default()
+        .spawn(SpriteBundle {
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(70.0, 70.0)),
+                ..default()
             },
-            EnemyShip { enemy_type },
-        ))
+            texture: asset_server.load(enemy_type.get_image_file()),
+            transform: Transform::from_translation(loc),
+            ..Default::default()
+        })
+        .insert(EnemyShip { enemy_type })
         .id();
 
     commands.entity(bg_panel).push_children(&[enemy]);

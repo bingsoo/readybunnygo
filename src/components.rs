@@ -15,7 +15,7 @@ pub struct EnemyShip {
 pub struct BackgroundPanel;
 
 #[derive(Component)]
-pub struct Tile;
+pub struct BackgroundTile;
 
 #[derive(Component)]
 pub struct BulletObject;
