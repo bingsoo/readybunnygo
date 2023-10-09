@@ -5,24 +5,18 @@ const NUM_ENEMY: usize = 500;
 pub fn spawn_enemy(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    q: Query<Entity, With<BackgroundPanel>>,
     window_query: Query<&Window, With<PrimaryWindow>>,
 ) {
     println!("spawn enemy");
 
-    let bg = q.single();
     let window = window_query.single();
     let mut rng = rand::thread_rng();
 
-    for i in 0..NUM_ENEMY {
+    for _ in 0..NUM_ENEMY {
         let enemy_x: f32 = rng.gen_range(0.0..=window.width()) - window.width() * 0.5;
-        let enemy_location = Vec3::new(enemy_x, i as f32 * 50.0 + 900.0, 10.);
+        let enemy_location = Vec3::new(enemy_x, window.height() + 200.0, 10.);
         let enemy_type = random_enemy_type();
-        add_enemy(&mut commands, &asset_server, bg, enemy_location, enemy_type);
-    }
-
-    for entity in q.iter() {
-        println!("in spawn_enemy found id {}", entity.index());
+        add_enemy(&mut commands, &asset_server, enemy_location, enemy_type);
     }
 }
 
@@ -41,14 +35,8 @@ pub fn update_enemy(
     }
 }
 
-fn add_enemy(
-    commands: &mut Commands,
-    asset_server: &Res<AssetServer>,
-    bg_panel: Entity,
-    loc: Vec3,
-    enemy_type: EnemyType,
-) {
-    let enemy = commands
+fn add_enemy(commands: &mut Commands, asset_server: &Res<AssetServer>, loc: Vec3, enemy_type: EnemyType) {
+    commands
         .spawn(SpriteBundle {
             sprite: Sprite {
                 custom_size: Some(Vec2::new(70.0, 70.0)),
@@ -58,10 +46,7 @@ fn add_enemy(
             transform: Transform::from_translation(loc),
             ..Default::default()
         })
-        .insert(EnemyShip { enemy_type })
-        .id();
-
-    commands.entity(bg_panel).push_children(&[enemy]);
+        .insert(EnemyShip { enemy_type });
 }
 
 fn random_enemy_type() -> EnemyType {
