@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-const NUM_ENEMY: usize = 1500;
+const NUM_ENEMY: usize = 500;
 
 pub fn spawn_enemy(
     mut commands: Commands,

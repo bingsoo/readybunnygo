@@ -20,7 +20,7 @@ pub fn spawn_bunny(mut commands: Commands, asset_server: Res<AssetServer>) {
             ..Default::default()
         })
         .insert(Bunny)
-        .insert(BulletTimer(Timer::from_seconds(0.5, TimerMode::Repeating)));
+        .insert(BulletTimer(Timer::from_seconds(2.5, TimerMode::Repeating)));
 
     // TODO : preload bullets (object pooling)
     // for _ in 0..PRELOAD_BULLET_COUNT {
