@@ -2,7 +2,7 @@ use crate::prelude::*;
 use bevy::app::AppExit;
 
 pub const BUNNY_SPEED: f32 = 550.0;
-pub const PRELOAD_BULLET_COUNT: usize = 500;
+//pub const PRELOAD_BULLET_COUNT: usize = 500;
 
 pub fn spawn_bunny(mut commands: Commands, asset_server: Res<AssetServer>) {
     println!("spawn bunny !");
@@ -17,17 +17,21 @@ pub fn spawn_bunny(mut commands: Commands, asset_server: Res<AssetServer>) {
             transform: Transform::from_translation(Vec3 { x: 0.0, y: 0.0, z: 9.0 }),
             ..Default::default()
         })
-        .insert(Bunny);
+        .insert(Bunny)
+        .insert(BulletTimer(Timer::from_seconds(0.7, TimerMode::Repeating)));
 
-    for _ in 0..PRELOAD_BULLET_COUNT {
-        pre_spawn_bullets(&mut commands, &asset_server);
-    }
+    // TODO : preload bullets (object pooling)
+    // for _ in 0..PRELOAD_BULLET_COUNT {
+    //     pre_spawn_bullets(&mut commands, &asset_server);
+    // }
 }
 
 pub fn update_bunny(
-    mut query: Query<&mut Transform, With<Bunny>>,
+    mut query: Query<(&mut Transform, &mut BulletTimer), With<Bunny>>,
     keyboard_input: Res<Input<KeyCode>>,
     time: Res<Time>,
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
     mut exit: EventWriter<AppExit>,
 ) {
     let mut translation = Vec3::ZERO;
@@ -41,23 +45,27 @@ pub fn update_bunny(
             _ => {},
         }
     }
-    if let Ok(mut transform) = query.get_single_mut() {
+    if let Ok((mut transform, mut timer)) = query.get_single_mut() {
         transform.translation += translation;
+        if timer.0.tick(time.delta()).just_finished() {
+            spawn_bullet(&mut commands, &asset_server, &transform);
+        }
     }
 }
 
-fn pre_spawn_bullets(commands: &mut Commands, asset_server: &Res<AssetServer>) {
-    commands.spawn((
-        SpriteBundle {
+fn spawn_bullet(commands: &mut Commands, asset_server: &Res<AssetServer>, newtrans: &Transform) {
+    let mut transform = newtrans.clone();
+    transform.translation.z = 999.0;
+    commands
+        .spawn(SpriteBundle {
             sprite: Sprite {
-                custom_size: Some(Vec2::new(10.0, 10.0)),
+                custom_size: Some(Vec2::new(DEFAULT_SIZE, DEFAULT_SIZE)),
                 ..default()
             },
             texture: asset_server.load("bullets/bullet.png"),
-            transform: Transform::from_translation(Vec3 { x: 0.0, y: 0.0, z: 9.0 }),
-            visibility: Visibility::Hidden,
+            transform,
+            visibility: Visibility::Visible,
             ..Default::default()
-        },
-        BulletObject,
-    ));
+        })
+        .insert(BulletObject);
 }

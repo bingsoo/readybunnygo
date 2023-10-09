@@ -19,3 +19,6 @@ pub struct BackgroundTile;
 
 #[derive(Component)]
 pub struct BulletObject;
+
+#[derive(Component)]
+pub struct BulletTimer(pub Timer);
