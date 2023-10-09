@@ -52,8 +52,8 @@ pub fn spawn_background(
     }
 
     commands.insert_resource(GlobalData {
-        current_pos_y: begin_y,
-        move_y: 0.0,
+        current_background_y: begin_y,
+        total_move_distance: 0.0,
         should_zoom: false,
         speed: ScrollSpeed::Speed0,
     });
@@ -112,13 +112,13 @@ pub fn update_camera(
 }
 
 pub fn update_background(
-    mut parent_position: Query<&mut Transform, With<BackgroundPanel>>,
+    mut background_query: Query<&mut Transform, With<BackgroundPanel>>,
     mut global_data: ResMut<GlobalData>,
 ) {
-    let mut transform = parent_position.single_mut();
+    let mut transform = background_query.single_mut();
     transform.translation.y -= global_data.speed.get_scroll_speed();
-    global_data.current_pos_y = transform.translation.y;
-    global_data.move_y += global_data.speed.get_scroll_speed();
+    global_data.current_background_y = transform.translation.y;
+    global_data.total_move_distance += global_data.speed.get_scroll_speed();
 }
 
 pub fn update_user_input(keycode: Res<Input<KeyCode>>, mut global_data: ResMut<GlobalData>) {
