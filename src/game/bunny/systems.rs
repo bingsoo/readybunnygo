@@ -1,6 +1,8 @@
 use crate::prelude::*;
 use bevy::app::AppExit;
 
+use super::bullet;
+
 pub const BUNNY_SPEED: f32 = 550.0;
 //pub const PRELOAD_BULLET_COUNT: usize = 500;
 
@@ -45,27 +47,11 @@ pub fn update_bunny(
             _ => {},
         }
     }
+
     if let Ok((mut transform, mut timer)) = query.get_single_mut() {
         transform.translation += translation;
         if timer.0.tick(time.delta()).just_finished() {
-            spawn_bullet(&mut commands, &asset_server, &transform);
+            bullet::spawn_bullet(&mut commands, &asset_server, &transform);
         }
     }
-}
-
-fn spawn_bullet(commands: &mut Commands, asset_server: &Res<AssetServer>, newtrans: &Transform) {
-    let mut transform = newtrans.clone();
-    transform.translation.z = 999.0;
-    commands
-        .spawn(SpriteBundle {
-            sprite: Sprite {
-                custom_size: Some(Vec2::new(DEFAULT_SIZE, DEFAULT_SIZE)),
-                ..default()
-            },
-            texture: asset_server.load("bullets/bullet.png"),
-            transform,
-            visibility: Visibility::Visible,
-            ..Default::default()
-        })
-        .insert(BulletObject);
 }
