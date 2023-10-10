@@ -9,6 +9,7 @@ pub struct Bunny;
 #[derive(Component)]
 pub struct EnemyShip {
     pub enemy_type: EnemyType,
+    pub appear_distance: f32,
 }
 
 #[derive(Component)]

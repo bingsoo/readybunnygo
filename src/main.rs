@@ -5,6 +5,7 @@ mod components;
 mod game;
 mod resources;
 mod shared_enums;
+mod tunings;
 mod tweening;
 mod utils;
 
@@ -14,6 +15,7 @@ mod prelude {
     pub use crate::game::GamePlugin;
     pub use crate::resources::*;
     pub use crate::shared_enums::*;
+    pub use crate::tunings::*;
     pub use crate::tweening::*;
     pub use crate::utils::*;
     pub use bevy::prelude::*;

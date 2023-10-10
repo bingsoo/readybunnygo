@@ -21,13 +21,6 @@ pub fn update_bullet(mut commands: Commands, mut bullet_query: Query<(Entity, &m
     for (entity, mut transform) in bullet_query.iter_mut() {
         transform.translation.y += 10.0;
 
-        // for enemy_transform in enemy_query.iter() {
-        //     if transform.translation.distance(enemy_transform.translation) < 50.0 {
-        //         //transform.translation.y = 9999.0;
-        //         println!("!!!");
-        //     }
-        // }
-
         if transform.translation.y > 2000.0 {
             commands.entity(entity).despawn();
             println!("despawn bullet");
@@ -38,16 +31,16 @@ pub fn update_bullet(mut commands: Commands, mut bullet_query: Query<(Entity, &m
 pub fn update_bullet_hit(
     bullet_query: Query<&Transform, With<BulletObject>>,
     enemy_query: Query<&Transform, With<EnemyShip>>,
-    global_data: Res<GlobalData>,
 ) {
     for bullet_transform in bullet_query.iter() {
         for enemy_transform in enemy_query.iter() {
-            let loc = get_real_location(&enemy_transform.translation, &global_data);
+            let dx = enemy_transform.translation.x - bullet_transform.translation.x;
+            let dy = enemy_transform.translation.y - bullet_transform.translation.y;
+            let distance_2d = (dx * dx + dy * dy).sqrt();
+            println!("distance_2d = {}", distance_2d);
 
-            println!("bullet loc = {:?}", bullet_transform.translation);
-            println!("enemy loc = {:?}", enemy_transform.translation);
-            if bullet_transform.translation.distance(loc) < 50.0 {
-                println!("!!!");
+            if distance_2d < HIT_DISTANCE {
+                println!("hit 2d space !!!");
             }
         }
     }

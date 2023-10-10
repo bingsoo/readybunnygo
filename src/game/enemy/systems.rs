@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-const NUM_ENEMY: usize = 500;
+const NUM_ENEMY: usize = 1;
 
 pub fn spawn_enemy(
     mut commands: Commands,
@@ -20,22 +20,22 @@ pub fn spawn_enemy(
     }
 }
 
-pub fn update_enemy(
-    mut enemy_query: Query<(&mut Transform, &EnemyShip)>,
-    global_data: Res<GlobalData>,
-    window_query: Query<&Window, With<PrimaryWindow>>,
-) {
-    let window = window_query.single();
+pub fn update_enemy(mut enemy_query: Query<(&mut Transform, &EnemyShip)>, global_data: Res<GlobalData>) {
     for (mut transform, enemy) in enemy_query.iter_mut() {
-        let current_loc = get_real_location(&transform.translation, &global_data);
         let speed = enemy.enemy_type.get_speed();
-        if current_loc.y < window.height() + 500.0 {
+        if is_ready_to_move(enemy, &global_data) {
             transform.translation.y -= speed;
         }
     }
 }
 
+fn is_ready_to_move(enemy: &EnemyShip, global_data: &GlobalData) -> bool {
+    global_data.total_move_distance > enemy.appear_distance
+}
+
 fn add_enemy(commands: &mut Commands, asset_server: &Res<AssetServer>, loc: Vec3, enemy_type: EnemyType) {
+    let rand_distance = rand::thread_rng().gen_range(0.0..=1.0);
+
     commands
         .spawn(SpriteBundle {
             sprite: Sprite {
@@ -46,7 +46,10 @@ fn add_enemy(commands: &mut Commands, asset_server: &Res<AssetServer>, loc: Vec3
             transform: Transform::from_translation(loc),
             ..Default::default()
         })
-        .insert(EnemyShip { enemy_type });
+        .insert(EnemyShip {
+            enemy_type,
+            appear_distance: rand_distance,
+        });
 }
 
 fn random_enemy_type() -> EnemyType {

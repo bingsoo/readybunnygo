@@ -37,21 +37,26 @@ pub fn update_bunny(
     mut exit: EventWriter<AppExit>,
 ) {
     let mut translation = Vec3::ZERO;
-    for key in keyboard_input.get_pressed() {
-        match key {
-            KeyCode::A => translation.x -= BUNNY_SPEED * time.delta_seconds(),
-            KeyCode::D => translation.x += BUNNY_SPEED * time.delta_seconds(),
-            KeyCode::W => translation.y += BUNNY_SPEED * time.delta_seconds(),
-            KeyCode::S => translation.y -= BUNNY_SPEED * time.delta_seconds(),
-            KeyCode::Escape => exit.send(AppExit),
-            _ => {},
-        }
-    }
 
-    if let Ok((mut transform, mut timer)) = query.get_single_mut() {
-        transform.translation += translation;
-        if timer.0.tick(time.delta()).just_finished() {
-            bullet::spawn_bullet(&mut commands, &asset_server, &transform);
+    if let Ok((mut transform, _)) = query.get_single_mut() {
+        for key in keyboard_input.get_pressed() {
+            match key {
+                KeyCode::A => translation.x -= BUNNY_SPEED * time.delta_seconds(),
+                KeyCode::D => translation.x += BUNNY_SPEED * time.delta_seconds(),
+                KeyCode::W => translation.y += BUNNY_SPEED * time.delta_seconds(),
+                KeyCode::S => translation.y -= BUNNY_SPEED * time.delta_seconds(),
+                KeyCode::Escape => exit.send(AppExit),
+                _ => {},
+            }
         }
+
+        if keyboard_input.just_pressed(KeyCode::Space) {
+            bullet::spawn_bullet(&mut commands, &asset_server, &transform)
+        }
+
+        transform.translation += translation;
+        // if timer.0.tick(time.delta()).just_finished() {
+        //     bullet::spawn_bullet(&mut commands, &asset_server, &transform);
+        // }
     }
 }
