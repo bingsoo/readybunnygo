@@ -1,1 +1,1 @@
-pub const HIT_DISTANCE: f32 = 100.0;
+pub const HIT_DISTANCE: f32 = 40.0;

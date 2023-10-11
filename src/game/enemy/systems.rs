@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-const NUM_ENEMY: usize = 1;
+const NUM_ENEMY: usize = 1000;
 
 pub fn spawn_enemy(
     mut commands: Commands,
@@ -34,7 +34,7 @@ fn is_ready_to_move(enemy: &EnemyShip, global_data: &GlobalData) -> bool {
 }
 
 fn add_enemy(commands: &mut Commands, asset_server: &Res<AssetServer>, loc: Vec3, enemy_type: EnemyType) {
-    let rand_distance = rand::thread_rng().gen_range(0.0..=1.0);
+    let rand_distance = rand::thread_rng().gen_range(0.0..=1000.0);
 
     commands
         .spawn(SpriteBundle {
