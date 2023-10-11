@@ -22,7 +22,7 @@ pub fn spawn_enemy(
 
 pub fn update_enemy(mut enemy_query: Query<(&mut Transform, &EnemyShip)>, global_data: Res<GlobalData>) {
     for (mut transform, enemy) in enemy_query.iter_mut() {
-        let speed = enemy.enemy_type.get_speed();
+        let speed = enemy.enemy_type.get_speed() + global_data.speed.get_scroll_speed();
         if is_ready_to_move(enemy, &global_data) {
             transform.translation.y -= speed;
         }
@@ -34,7 +34,7 @@ fn is_ready_to_move(enemy: &EnemyShip, global_data: &GlobalData) -> bool {
 }
 
 fn add_enemy(commands: &mut Commands, asset_server: &Res<AssetServer>, loc: Vec3, enemy_type: EnemyType) {
-    let rand_distance = rand::thread_rng().gen_range(0.0..=1000.0);
+    let rand_distance = rand::thread_rng().gen_range(0.0..=100000.0);
 
     commands
         .spawn(SpriteBundle {

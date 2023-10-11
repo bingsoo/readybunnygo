@@ -22,7 +22,9 @@ pub fn update_bullet(mut commands: Commands, mut bullet_query: Query<(Entity, &m
     for (entity, mut transform) in bullet_query.iter_mut() {
         transform.translation.y += 10.0;
 
-        if transform.translation.y > 2000.0 {
+        //println!("bullet y = {}", transform.translation.y);
+
+        if transform.translation.y > 600.0 {
             commands.entity(entity).despawn();
             println!("despawn bullet");
         }
