@@ -56,6 +56,8 @@ pub fn spawn_background(
         total_move_distance: 0.0,
         should_zoom: false,
         speed: ScrollSpeed::Speed0,
+        is_dash_on: false,
+        dash_time: 0.0,
     });
     println!("starting pos y = {}", begin_y);
 }
@@ -116,9 +118,14 @@ pub fn update_background(
     mut global_data: ResMut<GlobalData>,
 ) {
     let mut transform = background_query.single_mut();
-    transform.translation.y -= global_data.speed.get_scroll_speed();
+    let mut current_speed = global_data.speed.get_scroll_speed();
+    if global_data.is_dash_on {
+        current_speed += DASH_SPEED;
+    }
+
+    transform.translation.y -= current_speed;
     global_data.current_background_y = transform.translation.y;
-    global_data.total_move_distance += global_data.speed.get_scroll_speed();
+    global_data.total_move_distance += current_speed;
 }
 
 pub fn update_user_input(keycode: Res<Input<KeyCode>>, mut global_data: ResMut<GlobalData>) {

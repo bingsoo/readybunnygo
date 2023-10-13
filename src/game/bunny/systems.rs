@@ -34,17 +34,26 @@ pub fn update_bunny(
     time: Res<Time>,
     mut commands: Commands,
     asset_server: Res<AssetServer>,
+    mut global_data: ResMut<GlobalData>,
     mut exit: EventWriter<AppExit>,
 ) {
     let mut translation = Vec3::ZERO;
+    let current_speed = BUNNY_SPEED;
+
+    if global_data.is_dash_on {
+        global_data.dash_time -= time.delta_seconds();
+        if global_data.dash_time < 0.0 {
+            global_data.is_dash_on = false;
+        }
+    }
 
     if let Ok((mut transform, _)) = query.get_single_mut() {
         for key in keyboard_input.get_pressed() {
             match key {
-                KeyCode::A => translation.x -= BUNNY_SPEED * time.delta_seconds(),
-                KeyCode::D => translation.x += BUNNY_SPEED * time.delta_seconds(),
-                KeyCode::W => translation.y += BUNNY_SPEED * time.delta_seconds(),
-                KeyCode::S => translation.y -= BUNNY_SPEED * time.delta_seconds(),
+                KeyCode::A => translation.x -= current_speed * time.delta_seconds(),
+                KeyCode::D => translation.x += current_speed * time.delta_seconds(),
+                KeyCode::W => translation.y += current_speed * time.delta_seconds(),
+                KeyCode::S => translation.y -= current_speed * time.delta_seconds(),
                 KeyCode::Escape => exit.send(AppExit),
                 _ => {},
             }
@@ -54,9 +63,19 @@ pub fn update_bunny(
             bullet::spawn_bullet(&mut commands, &asset_server, &transform)
         }
 
+        if keyboard_input.just_pressed(KeyCode::ShiftRight) {
+            println!("shift right pressed");
+            global_data.is_dash_on = true;
+            global_data.dash_time = DASH_TIME;
+        }
+
         transform.translation += translation;
         // if timer.0.tick(time.delta()).just_finished() {
         //     bullet::spawn_bullet(&mut commands, &asset_server, &transform);
         // }
+
+        if global_data.dash_time > 0.0 {
+            println!("dash time = {}", global_data.dash_time);
+        }
     }
 }

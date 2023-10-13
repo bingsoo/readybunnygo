@@ -8,4 +8,6 @@ pub struct GlobalData {
     pub total_move_distance: f32,
     pub should_zoom: bool,
     pub speed: ScrollSpeed,
+    pub is_dash_on: bool,
+    pub dash_time: f32,
 }
