@@ -22,6 +22,7 @@ mod prelude {
     pub use bevy::window::{PresentMode, PrimaryWindow, WindowTheme};
     pub use bevy_tweening::*;
     pub use rand::prelude::*;
+    pub use std::cmp::{max, min};
 }
 
 use prelude::*;

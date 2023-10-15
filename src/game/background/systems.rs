@@ -57,8 +57,9 @@ pub fn spawn_background(
         should_zoom: false,
         speed: ScrollSpeed::Speed1,
         is_dash_on: false,
-        dash_time: 0.0,
+        dash_charging_time: 0.0,
         zoomed_in: true,
+        dash_bonus_speed: 0.0,
     });
     println!("starting pos y = {}", begin_y);
 }
@@ -119,10 +120,7 @@ pub fn update_background(
     mut global_data: ResMut<GlobalData>,
 ) {
     let mut transform = background_query.single_mut();
-    let mut current_speed = global_data.speed.get_scroll_speed();
-    if global_data.is_dash_on {
-        current_speed += DASH_SPEED;
-    }
+    let current_speed = global_data.speed.get_scroll_speed() + global_data.dash_bonus_speed;
 
     transform.translation.y -= current_speed;
     global_data.current_background_y = transform.translation.y;

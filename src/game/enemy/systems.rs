@@ -22,11 +22,7 @@ pub fn spawn_enemy(
 
 pub fn update_enemy(mut enemy_query: Query<(&mut Transform, &EnemyShip)>, global_data: Res<GlobalData>) {
     for (mut transform, enemy) in enemy_query.iter_mut() {
-        let mut speed = enemy.enemy_type.get_speed() + global_data.speed.get_scroll_speed();
-        if global_data.is_dash_on {
-            speed += DASH_SPEED;
-        }
-
+        let speed = enemy.enemy_type.get_speed() + global_data.speed.get_scroll_speed() + global_data.dash_bonus_speed;
         if is_ready_to_move(enemy, &global_data) {
             transform.translation.y -= speed;
         }

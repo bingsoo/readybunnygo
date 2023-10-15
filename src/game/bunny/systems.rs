@@ -42,7 +42,6 @@ pub fn update_bunny(
 ) {
     let mut translation = Vec3::ZERO;
     let current_speed = BUNNY_SPEED;
-    let mut is_dash_on = false;
 
     if let Ok((mut transform, _)) = query.get_single_mut() {
         // bullet fire
@@ -62,15 +61,28 @@ pub fn update_bunny(
             }
         }
 
+        let test_charge_time = 0.7;
+
         // dash
         for key in mouse_button_input.get_pressed() {
             match key {
-                MouseButton::Right => is_dash_on = true,
+                MouseButton::Right => {
+                    if global_data.dash_charging_time >= test_charge_time {
+                        global_data.is_dash_on = true;
+                        global_data.dash_charging_time = 0.0;
+                    } else if global_data.is_dash_on == false {
+                        global_data.dash_charging_time += time.delta_seconds();
+                    }
+                    println!("dash charging time = {}", global_data.dash_charging_time);
+                },
+
                 _ => {},
             }
         }
+
         if mouse_button_input.just_released(MouseButton::Right) {
-            is_dash_on = false;
+            global_data.is_dash_on = false;
+            global_data.dash_charging_time = 0.0;
         }
 
         // wheel zoom
@@ -88,7 +100,15 @@ pub fn update_bunny(
             }
         }
 
-        global_data.is_dash_on = is_dash_on;
         transform.translation += translation;
+    }
+
+    let bonus_delta = 0.5;
+    if global_data.is_dash_on && global_data.dash_bonus_speed < DASH_SPEED {
+        global_data.dash_bonus_speed += bonus_delta * 2.0;
+        global_data.dash_bonus_speed = f32::min(DASH_SPEED, global_data.dash_bonus_speed);
+    } else if global_data.is_dash_on == false && global_data.dash_bonus_speed > 0.0 {
+        global_data.dash_bonus_speed -= bonus_delta;
+        global_data.dash_bonus_speed = f32::max(0.0, global_data.dash_bonus_speed);
     }
 }
