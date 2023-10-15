@@ -42,8 +42,8 @@ pub fn update_bunny(
 ) {
     let mut translation = Vec3::ZERO;
     let current_speed = BUNNY_SPEED;
-
     let mut is_dash_on = false;
+
     if let Ok((mut transform, _)) = query.get_single_mut() {
         // bullet fire
         if keyboard_input.just_pressed(KeyCode::Space) {
@@ -75,22 +75,30 @@ pub fn update_bunny(
         }
 
         // zoom
-        if keyboard_input.just_pressed(KeyCode::Up) {
+        if keyboard_input.just_pressed(KeyCode::Up) && global_data.zoomed_in == false {
             global_data.speed.increment();
             global_data.should_zoom = true;
-        } else if keyboard_input.just_pressed(KeyCode::Down) {
+            global_data.zoomed_in = true;
+            println!("zoom in");
+        } else if keyboard_input.just_pressed(KeyCode::Down) && global_data.zoomed_in == true {
             global_data.speed.decrement();
             global_data.should_zoom = true;
+            global_data.zoomed_in = false;
+            println!("zoom out");
         }
 
         // wheel zoom
         for ev in scroll_evr.iter() {
-            if ev.y > 0.0 {
+            if ev.y > 0.0 && global_data.zoomed_in == false {
                 global_data.speed.increment();
                 global_data.should_zoom = true;
-            } else if ev.y < 0.0 {
+                global_data.zoomed_in = true;
+                println!("zoom in");
+            } else if ev.y < 0.0 && global_data.zoomed_in == true {
                 global_data.speed.decrement();
                 global_data.should_zoom = true;
+                global_data.zoomed_in = false;
+                println!("zoom out");
             }
         }
 

@@ -58,6 +58,7 @@ pub fn spawn_background(
         speed: ScrollSpeed::Speed1,
         is_dash_on: false,
         dash_time: 0.0,
+        zoomed_in: true,
     });
     println!("starting pos y = {}", begin_y);
 }
