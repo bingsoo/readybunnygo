@@ -2,7 +2,7 @@ use crate::prelude::*;
 use std::collections::HashSet;
 
 pub fn spawn_bullet(commands: &mut Commands, asset_server: &Res<AssetServer>, newtrans: &Transform) {
-    let mut transform = newtrans.clone();
+    let mut transform = *newtrans;
     transform.translation.z = 999.0;
     commands
         .spawn(SpriteBundle {

@@ -65,18 +65,11 @@ pub fn update_bunny(
 
         // dash
         for key in mouse_button_input.get_pressed() {
-            match key {
-                MouseButton::Right => {
-                    if global_data.dash_charging_time >= test_charge_time {
-                        global_data.is_dash_on = true;
-                        global_data.dash_charging_time = 0.0;
-                    } else if global_data.is_dash_on == false {
-                        global_data.dash_charging_time += time.delta_seconds();
-                    }
-                    println!("dash charging time = {}", global_data.dash_charging_time);
-                },
-
-                _ => {},
+            if *key == MouseButton::Right && global_data.dash_charging_time >= test_charge_time {
+                global_data.is_dash_on = true;
+                global_data.dash_charging_time = 0.0;
+            } else if !global_data.is_dash_on {
+                global_data.dash_charging_time += time.delta_seconds();
             }
         }
 
@@ -87,12 +80,12 @@ pub fn update_bunny(
 
         // wheel zoom
         for ev in scroll_evr.iter() {
-            if ev.y > 0.0 && global_data.zoomed_in == false {
+            if ev.y > 0.0 && !global_data.zoomed_in {
                 global_data.speed.increment();
                 global_data.should_zoom = true;
                 global_data.zoomed_in = true;
                 println!("zoom in");
-            } else if ev.y < 0.0 && global_data.zoomed_in == true {
+            } else if ev.y < 0.0 && global_data.zoomed_in {
                 global_data.speed.decrement();
                 global_data.should_zoom = true;
                 global_data.zoomed_in = false;
@@ -107,7 +100,7 @@ pub fn update_bunny(
     if global_data.is_dash_on && global_data.dash_bonus_speed < DASH_SPEED {
         global_data.dash_bonus_speed += bonus_delta * 2.0;
         global_data.dash_bonus_speed = f32::min(DASH_SPEED, global_data.dash_bonus_speed);
-    } else if global_data.is_dash_on == false && global_data.dash_bonus_speed > 0.0 {
+    } else if !global_data.is_dash_on && global_data.dash_bonus_speed > 0.0 {
         global_data.dash_bonus_speed -= bonus_delta;
         global_data.dash_bonus_speed = f32::max(0.0, global_data.dash_bonus_speed);
     }
