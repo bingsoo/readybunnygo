@@ -30,15 +30,15 @@ pub fn spawn_bunny(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 
 pub fn update_bunny(
-    mut query: Query<(&mut Transform, &mut BulletTimer), With<Bunny>>,
-    keyboard_input: Res<Input<KeyCode>>,
-    mouse_button_input: Res<Input<MouseButton>>,
-    mut scroll_evr: EventReader<MouseWheel>,
-    time: Res<Time>,
     mut commands: Commands,
-    asset_server: Res<AssetServer>,
+    mut query: Query<(&mut Transform, &mut BulletTimer), With<Bunny>>,
+    mut scroll_evr: EventReader<MouseWheel>,
     mut global_data: ResMut<GlobalData>,
     mut exit: EventWriter<AppExit>,
+    keyboard_input: Res<Input<KeyCode>>,
+    mouse_button_input: Res<Input<MouseButton>>,
+    asset_server: Res<AssetServer>,
+    time: Res<Time>,
 ) {
     let mut translation = Vec3::ZERO;
     let current_speed = BUNNY_SPEED;
