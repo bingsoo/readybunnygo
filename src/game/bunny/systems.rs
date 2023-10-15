@@ -40,17 +40,8 @@ pub fn update_bunny(
     mut global_data: ResMut<GlobalData>,
     mut exit: EventWriter<AppExit>,
 ) {
-    //use bevy::input::mouse::MouseScrollUnit;
-
     let mut translation = Vec3::ZERO;
     let current_speed = BUNNY_SPEED;
-
-    // if global_data.is_dash_on {
-    //     global_data.dash_time -= time.delta_seconds();
-    //     if global_data.dash_time < 0.0 {
-    //         global_data.is_dash_on = false;
-    //     }
-    // }
 
     let mut is_dash_on = false;
     if let Ok((mut transform, _)) = query.get_single_mut() {
@@ -59,16 +50,7 @@ pub fn update_bunny(
             bullet::spawn_bullet(&mut commands, &asset_server, &transform);
         }
 
-        for ev in scroll_evr.iter() {
-            if ev.y > 0.0 {
-                global_data.speed.increment();
-                global_data.should_zoom = true;
-            } else if ev.y < 0.0 {
-                global_data.speed.decrement();
-                global_data.should_zoom = true;
-            }
-        }
-
+        // basic movement
         for key in keyboard_input.get_pressed() {
             match key {
                 KeyCode::A => translation.x -= current_speed * time.delta_seconds(),
@@ -81,27 +63,35 @@ pub fn update_bunny(
             }
         }
 
+        // dash
         for key in mouse_button_input.get_pressed() {
             match key {
                 MouseButton::Right => is_dash_on = true,
                 _ => {},
             }
         }
+        if mouse_button_input.just_released(MouseButton::Right) || keyboard_input.just_released(KeyCode::ShiftRight) {
+            is_dash_on = false;
+        }
 
-        // dash
-        if mouse_button_input.just_released(MouseButton::Right) {
-            is_dash_on = false;
-        }
-        if keyboard_input.just_released(KeyCode::ShiftRight) {
-            is_dash_on = false;
-        }
+        // zoom
         if keyboard_input.just_pressed(KeyCode::Up) {
             global_data.speed.increment();
             global_data.should_zoom = true;
-        }
-        if keyboard_input.just_pressed(KeyCode::Down) {
+        } else if keyboard_input.just_pressed(KeyCode::Down) {
             global_data.speed.decrement();
             global_data.should_zoom = true;
+        }
+
+        // wheel zoom
+        for ev in scroll_evr.iter() {
+            if ev.y > 0.0 {
+                global_data.speed.increment();
+                global_data.should_zoom = true;
+            } else if ev.y < 0.0 {
+                global_data.speed.decrement();
+                global_data.should_zoom = true;
+            }
         }
 
         global_data.is_dash_on = is_dash_on;
