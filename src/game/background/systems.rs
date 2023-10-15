@@ -95,7 +95,7 @@ pub fn update_camera(
     let (id, projection) = q.single();
     if global_data.should_zoom {
         global_data.should_zoom = false;
-        println!("camera scale = {}", projection.scale);
+        //println!("camera scale = {}", projection.scale);
 
         let zoom_tween = Tween::new(
             EaseFunction::QuadraticInOut,
@@ -106,11 +106,11 @@ pub fn update_camera(
             },
         );
         commands.entity(id).insert(Animator::new(zoom_tween));
-        println!(
-            "camera scale = {} -> {}",
-            projection.scale,
-            global_data.speed.get_zoom_scale()
-        );
+        // println!(
+        //     "camera scale = {} -> {}",
+        //     projection.scale,
+        //     global_data.speed.get_zoom_scale()
+        // );
     }
 }
 
