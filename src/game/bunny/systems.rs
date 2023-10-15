@@ -61,7 +61,7 @@ pub fn update_bunny(
             }
         }
 
-        let test_charge_time = 0.7;
+        let test_charge_time = 0.5;
 
         // dash
         for key in mouse_button_input.get_pressed() {
