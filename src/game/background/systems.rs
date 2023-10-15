@@ -127,20 +127,3 @@ pub fn update_background(
     global_data.current_background_y = transform.translation.y;
     global_data.total_move_distance += current_speed;
 }
-
-pub fn update_user_input(keycode: Res<Input<KeyCode>>, mut global_data: ResMut<GlobalData>) {
-    let mut change_made = false;
-    if keycode.just_pressed(KeyCode::Up) {
-        global_data.speed.increment();
-        change_made = true;
-    }
-    if keycode.just_pressed(KeyCode::Down) {
-        global_data.speed.decrement();
-        change_made = true;
-    }
-
-    if change_made {
-        global_data.should_zoom = true;
-        println!("current speed is {:?}", global_data.speed);
-    }
-}

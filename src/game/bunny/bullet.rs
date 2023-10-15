@@ -24,7 +24,7 @@ pub fn update_bullet(mut commands: Commands, mut bullet_query: Query<(Entity, &m
 
         //println!("bullet y = {}", transform.translation.y);
 
-        if transform.translation.y > 600.0 {
+        if transform.translation.y > 800.0 {
             commands.entity(entity).despawn();
             println!("despawn bullet");
         }
