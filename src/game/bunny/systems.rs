@@ -58,7 +58,6 @@ pub fn update_bunny(
                 KeyCode::W => translation.y += current_speed * time.delta_seconds(),
                 KeyCode::S => translation.y -= current_speed * time.delta_seconds(),
                 KeyCode::Escape => exit.send(AppExit),
-                KeyCode::ShiftRight => is_dash_on = true,
                 _ => {},
             }
         }
@@ -70,7 +69,7 @@ pub fn update_bunny(
                 _ => {},
             }
         }
-        if mouse_button_input.just_released(MouseButton::Right) || keyboard_input.just_released(KeyCode::ShiftRight) {
+        if mouse_button_input.just_released(MouseButton::Right) {
             is_dash_on = false;
         }
 
