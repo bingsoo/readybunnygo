@@ -55,7 +55,7 @@ pub fn spawn_background(
         current_background_y: begin_y,
         total_move_distance: 0.0,
         should_zoom: false,
-        speed: ScrollSpeed::Speed1,
+        speed: BackgroundSpeed::Speed1,
         is_dash_on: false,
         dash_charging_time: 0.0,
         zoomed_in: true,

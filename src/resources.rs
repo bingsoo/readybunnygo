@@ -7,7 +7,7 @@ pub struct GlobalData {
     // background
     pub current_background_y: f32,
     pub total_move_distance: f32,
-    pub speed: ScrollSpeed,
+    pub speed: BackgroundSpeed,
 
     // zoom
     pub should_zoom: bool,

@@ -1,37 +1,37 @@
 #[derive(Debug)]
-pub enum ScrollSpeed {
+pub enum BackgroundSpeed {
     Speed1,
     Speed2,
 }
 
-impl ScrollSpeed {
+impl BackgroundSpeed {
     // Helper function to increment the speed
     pub fn increment(&mut self) {
         *self = match *self {
-            ScrollSpeed::Speed1 => ScrollSpeed::Speed2,
-            ScrollSpeed::Speed2 => ScrollSpeed::Speed2,
+            BackgroundSpeed::Speed1 => BackgroundSpeed::Speed2,
+            BackgroundSpeed::Speed2 => BackgroundSpeed::Speed2,
         };
     }
 
     // Helper function to decrement the speed
     pub fn decrement(&mut self) {
         *self = match *self {
-            ScrollSpeed::Speed1 => ScrollSpeed::Speed1,
-            ScrollSpeed::Speed2 => ScrollSpeed::Speed1,
+            BackgroundSpeed::Speed1 => BackgroundSpeed::Speed1,
+            BackgroundSpeed::Speed2 => BackgroundSpeed::Speed1,
         };
     }
 
     pub fn get_zoom_scale(&self) -> f32 {
         match *self {
-            ScrollSpeed::Speed1 => 1.35,
-            ScrollSpeed::Speed2 => 1.0,
+            BackgroundSpeed::Speed1 => 1.35,
+            BackgroundSpeed::Speed2 => 1.0,
         }
     }
 
     pub fn get_scroll_speed(&self) -> f32 {
         match *self {
-            ScrollSpeed::Speed1 => 5.0,
-            ScrollSpeed::Speed2 => 5.0,
+            BackgroundSpeed::Speed1 => 5.0,
+            BackgroundSpeed::Speed2 => 5.0,
         }
     }
 }
