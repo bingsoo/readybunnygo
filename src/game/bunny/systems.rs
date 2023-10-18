@@ -78,6 +78,10 @@ pub fn update_bunny(
             global_data.dash_charging_time = 0.0;
         }
 
+        if mouse_button_input.just_pressed(MouseButton::Left) {
+            bullet::spawn_bullet(&mut commands, &asset_server, &transform);
+        }
+
         // wheel zoom
         for ev in scroll_evr.iter() {
             if ev.y > 0.0 && !global_data.zoomed_in {
