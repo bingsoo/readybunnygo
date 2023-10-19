@@ -50,6 +50,11 @@ pub fn spawn_background(
             add_bg_cell(&mut commands, &asset_server, loc_left, parent, get_tile_type(j));
         }
     }
+    for i in (0..col_count * 100).step_by(25) {
+        let h_pos = i as f32 * BG_CELL_SIZE;
+        let text_location = Vec3::new(row_side_count as f32 * -18.0, h_pos, 999.);
+        add_distance_text(&mut commands, &asset_server, parent, text_location, i);
+    }
 
     commands.insert_resource(GlobalData {
         current_background_y: begin_y,
@@ -86,6 +91,37 @@ fn add_bg_cell(
         .id();
 
     commands.entity(parent).push_children(&[sprite]);
+}
+
+fn add_distance_text(commands: &mut Commands, asset_server: &Res<AssetServer>, parent: Entity, loc: Vec3, number: i32) {
+    // Load the font
+    let font = asset_server.load("fonts/pixel_font.ttf");
+
+    // Create text style
+    let text_style = TextStyle {
+        font,
+        font_size: 30.0,
+        color: Color::WHITE,
+    };
+
+    let distance_string: String = format!("distance =  {}", number);
+
+    // Create and spawn the Text2dBundle
+    let text_entity = commands
+        .spawn(Text2dBundle {
+            text: Text {
+                sections: vec![TextSection {
+                    value: distance_string,
+                    style: text_style.clone(),
+                }],
+                ..Default::default() //alignment: text_alignment,
+            },
+            transform: Transform::from_translation(loc), // Setting the position here
+            ..Default::default()
+        })
+        .id();
+
+    commands.entity(parent).push_children(&[text_entity]);
 }
 
 pub fn update_camera(
