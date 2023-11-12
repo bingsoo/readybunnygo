@@ -38,7 +38,8 @@ fn main() {
             primary_window: Some(Window {
                 title: "Ready Bunny Go!".into(),
                 resolution: (1920., 1080.).into(),
-                present_mode: PresentMode::AutoVsync,
+                present_mode: PresentMode::AutoNoVsync,
+                //mode: bevy::window::WindowMode::BorderlessFullscreen,
                 fit_canvas_to_parent: true,
                 prevent_default_event_handling: false,
                 window_theme: Some(WindowTheme::Dark),
@@ -46,6 +47,8 @@ fn main() {
             }),
             ..default()
         }))
+        .add_plugins(bevy::diagnostic::FrameTimeDiagnosticsPlugin::default())
+        .add_plugins(bevy::diagnostic::LogDiagnosticsPlugin::default())
         .add_systems(Startup, setup)
         .add_plugins(TweeningPlugin)
         .add_plugins(GamePlugin)

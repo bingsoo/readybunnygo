@@ -83,7 +83,7 @@ pub fn update_bunny(
         }
 
         // wheel zoom
-        for ev in scroll_evr.iter() {
+        for ev in scroll_evr.read() {
             if ev.y > 0.0 && !global_data.zoomed_in {
                 global_data.speed.increment();
                 global_data.should_zoom = true;
