@@ -25,6 +25,7 @@ mod prelude {
     pub use std::cmp::{max, min};
 }
 
+use bevy_screen_diagnostics::{ScreenDiagnosticsPlugin, ScreenFrameDiagnosticsPlugin};
 use prelude::*;
 
 fn setup(mut commands: Commands) {
@@ -49,6 +50,8 @@ fn main() {
         }))
         .add_plugins(bevy::diagnostic::FrameTimeDiagnosticsPlugin::default())
         .add_plugins(bevy::diagnostic::LogDiagnosticsPlugin::default())
+        .add_plugins(ScreenDiagnosticsPlugin::default())
+        .add_plugins(ScreenFrameDiagnosticsPlugin)
         .add_systems(Startup, setup)
         .add_plugins(TweeningPlugin)
         .add_plugins(GamePlugin)
