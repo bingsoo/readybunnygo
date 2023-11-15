@@ -48,8 +48,6 @@ fn main() {
             }),
             ..default()
         }))
-        .add_plugins(bevy::diagnostic::FrameTimeDiagnosticsPlugin::default())
-        .add_plugins(bevy::diagnostic::LogDiagnosticsPlugin::default())
         .add_plugins(ScreenDiagnosticsPlugin::default())
         .add_plugins(ScreenFrameDiagnosticsPlugin)
         .add_systems(Startup, setup)
