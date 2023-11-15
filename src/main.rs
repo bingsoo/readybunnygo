@@ -50,8 +50,8 @@ fn main() {
         }))
         .add_plugins(ScreenDiagnosticsPlugin::default())
         .add_plugins(ScreenFrameDiagnosticsPlugin)
-        .add_systems(Startup, setup)
         .add_plugins(TweeningPlugin)
         .add_plugins(GamePlugin)
+        .add_systems(Startup, setup)
         .run();
 }
