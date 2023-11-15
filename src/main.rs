@@ -39,7 +39,7 @@ fn main() {
             primary_window: Some(Window {
                 title: "Ready Bunny Go!".into(),
                 resolution: (1920., 1080.).into(),
-                present_mode: PresentMode::AutoNoVsync,
+                present_mode: PresentMode::AutoVsync,
                 //mode: bevy::window::WindowMode::BorderlessFullscreen,
                 fit_canvas_to_parent: true,
                 prevent_default_event_handling: false,
