@@ -22,3 +22,5 @@ This project is released under the [MIT License](LICENSE). Feel free to study, m
 ---
 
 **Note:** This README is for archival purposes only. The project is no longer active, and the repository is not maintained.
+
+**Note 2:** Please keep in mind that "Ready Bunny Go" was my first project using the Bevy engine and the Rust language. As such, the build quality and code structure may not reflect best practices, and some aspects might not be optimally implemented. I encourage those who explore this project to use it as a reference point rather than a definitive guide, as I was also in the early stages of learning these tools.
